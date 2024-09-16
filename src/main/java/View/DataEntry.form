@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="View.DataEntry">
+  <grid id="27dc6" binding="rootPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1639" height="520"/>
+    </constraints>
+    <properties>
+      <minimumSize width="-1" height="-1"/>
+      <preferredSize width="1480" height="720"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="45e62" class="javax.swing.JLabel" binding="lblTitle">
+        <constraints border-constraint="North"/>
+        <properties>
+          <font name="Bookshelf Symbol 7" size="36" style="1"/>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="11"/>
+          <text value="Logistics Data Entry"/>
+        </properties>
+      </component>
+      <grid id="d2fb8" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="db689" binding="mainPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="52ff9" binding="mainLeftPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="c6ea9" class="javax.swing.JLabel" binding="lblLeftSub">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <font name="Bookshelf Symbol 7" size="24" style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="Product Information"/>
+                </properties>
+              </component>
+              <grid id="9e745" binding="leftCenterPanel" layout-manager="GridLayoutManager" row-count="11" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="10" left="10" bottom="10" right="5"/>
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="8bcaa" class="javax.swing.JTable" binding="prodTable">
+                    <constraints>
+                      <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="506e7" class="javax.swing.JTextField" binding="prodName">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="25"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="Name of Product"/>
+                    </properties>
+                  </component>
+                  <component id="97ae8" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="506e7"/>
+                      <text value="Product Name"/>
+                    </properties>
+                  </component>
+                  <component id="d17ea" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="3ad3a"/>
+                      <text value="Product Value"/>
+                    </properties>
+                  </component>
+                  <component id="368a3" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="b484f"/>
+                      <text value="Product Weight"/>
+                    </properties>
+                  </component>
+                  <grid id="4c196" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="7181e" class="javax.swing.JButton" binding="prodAdd">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="102" height="40"/>
+                          <text value="Add Product"/>
+                        </properties>
+                      </component>
+                      <component id="b7e2b" class="javax.swing.JButton" binding="prodEdit">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="127" height="40"/>
+                          <text value="Update Selected"/>
+                        </properties>
+                      </component>
+                      <component id="63a41" class="javax.swing.JButton" binding="prodDelete">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="123" height="40"/>
+                          <text value="Delete Selected"/>
+                        </properties>
+                      </component>
+                      <component id="ca4c" class="javax.swing.JButton" binding="prodReset">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="99" height="40"/>
+                          <text value="Clear Fields"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="2d02a" layout-manager="GridLayoutManager" row-count="1" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="4b2cc" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <labelFor value="2dcea"/>
+                          <text value="Length cm"/>
+                        </properties>
+                      </component>
+                      <component id="2dcea" class="javax.swing.JSpinner" binding="prodLength">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                            <preferred-size width="50" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <doubleBuffered value="false"/>
+                          <toolTipText value="Length of Product Rounded Up (p/Unit)"/>
+                        </properties>
+                      </component>
+                      <component id="9be7d" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <labelFor value="b484f"/>
+                          <text value="Width cm"/>
+                        </properties>
+                      </component>
+                      <component id="b484f" class="javax.swing.JSpinner" binding="prodWidth">
+                        <constraints>
+                          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                            <preferred-size width="50" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Width of Product Rounded Up (p/Unit)"/>
+                        </properties>
+                      </component>
+                      <component id="51ee5" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <labelFor value="7f861"/>
+                          <text value="Height cm"/>
+                          <toolTipText value="Height of Product Rounded Up (p/Unit)"/>
+                        </properties>
+                      </component>
+                      <component id="7f861" class="javax.swing.JSpinner" binding="prodHeight">
+                        <constraints>
+                          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                            <preferred-size width="50" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties/>
+                      </component>
+                    </children>
+                  </grid>
+                  <component id="6e7c1" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Product Dimentions"/>
+                    </properties>
+                  </component>
+                  <grid id="e0630" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="f5df9" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <labelFor value="63149"/>
+                          <text value="Kilograms"/>
+                        </properties>
+                      </component>
+                      <component id="63149" class="javax.swing.JSpinner" binding="prodWeight">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="200" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Weight of Product Rounded Up (p/Unit)"/>
+                        </properties>
+                      </component>
+                      <hspacer id="a791">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                    </children>
+                  </grid>
+                  <grid id="92aff" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="3ad3a" class="javax.swing.JTextField" binding="prodValue">
+                        <constraints>
+                          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="200" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Value of Product (p/Unit)"/>
+                        </properties>
+                      </component>
+                      <component id="aa3ab" class="javax.swing.JComboBox" binding="currencyCombo">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="80" height="25"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <model>
+                            <item value="R (ZAR)"/>
+                            <item value="$ (USD)"/>
+                            <item value="€ (EUR)"/>
+                            <item value="£ (GBP)"/>
+                            <item value="¥ (JPY)"/>
+                          </model>
+                          <toolTipText value="Select a Currency"/>
+                        </properties>
+                      </component>
+                      <component id="b89bd" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <labelFor value="aa3ab"/>
+                          <text value="Currency"/>
+                        </properties>
+                      </component>
+                      <hspacer id="df248">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                    </children>
+                  </grid>
+                  <component id="298af" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Current Product List"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="da960" binding="mainRightPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="7ca29" class="javax.swing.JLabel" binding="lblRightSub">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <font name="Bookshelf Symbol 7" size="24" style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="Route Information"/>
+                </properties>
+              </component>
+              <grid id="28d35" binding="rightCenterPanel" layout-manager="GridLayoutManager" row-count="11" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="10" left="5" bottom="10" right="10"/>
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="96976" class="javax.swing.JTable" binding="routeTable">
+                    <constraints>
+                      <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <grid id="ca69a" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="16b80" class="javax.swing.JButton" binding="roAdd">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="107" height="40"/>
+                          <text value="Add Location"/>
+                        </properties>
+                      </component>
+                      <component id="95d40" class="javax.swing.JButton" binding="roEdit">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="127" height="40"/>
+                          <text value="Update Selected"/>
+                        </properties>
+                      </component>
+                      <component id="52dd9" class="javax.swing.JButton" binding="roDelete">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="123" height="40"/>
+                          <text value="Delete Selected"/>
+                        </properties>
+                      </component>
+                      <component id="a7adc" class="javax.swing.JButton" binding="roReset">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="99" height="40"/>
+                          <text value="Clear Fields"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <component id="1861" class="javax.swing.JTextField" binding="roStreet">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="25"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="*REQUIRED*: Street Adress .e.g 12 Logistics St"/>
+                    </properties>
+                  </component>
+                  <component id="e8810" class="javax.swing.JTextField" binding="roTown">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="25"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="*OPTIONAL*: Town Name"/>
+                    </properties>
+                  </component>
+                  <component id="dbfbe" class="javax.swing.JTextField" binding="roCity">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="25"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="*OPTIONAL*: City Name"/>
+                    </properties>
+                  </component>
+                  <component id="d2e1f" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="dbfbe"/>
+                      <text value="City"/>
+                    </properties>
+                  </component>
+                  <component id="7b4c0" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="e8810"/>
+                      <text value="Town"/>
+                    </properties>
+                  </component>
+                  <component id="df37c" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="1861"/>
+                      <text value="Street Address"/>
+                    </properties>
+                  </component>
+                  <component id="186db" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <labelFor value="ea0f5"/>
+                      <text value="Post Code"/>
+                    </properties>
+                  </component>
+                  <component id="ea0f5" class="javax.swing.JTextField" binding="roPostCode">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="25"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="*REQUIRED*: Postal Code"/>
+                    </properties>
+                  </component>
+                  <component id="426d8" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Current Route Destinations"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="e1954" binding="mainCenterPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="f5fb6" class="javax.swing.JLabel" binding="lblCenterSub">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <font name="Bookshelf Symbol 7" size="24" style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="Vehicle Information"/>
+                </properties>
+              </component>
+              <grid id="8de65" binding="centerCenterPanel" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="10" left="5" bottom="10" right="5"/>
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="9a8ed" class="javax.swing.JList" binding="vehDetailsList">
+                    <constraints>
+                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <minimum-size width="-1" height="260"/>
+                        <preferred-size width="150" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <enabled value="true"/>
+                      <focusable value="false"/>
+                      <model/>
+                    </properties>
+                  </component>
+                  <component id="bfb71" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Container Dimentions"/>
+                    </properties>
+                  </component>
+                  <grid id="8f5a2" layout-manager="GridLayoutManager" row-count="1" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="99e5a" class="javax.swing.JSpinner" binding="vehHeight">
+                        <constraints>
+                          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <minimum-size width="-1" height="25"/>
+                            <preferred-size width="25" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Container Height in cm Rounded Up"/>
+                        </properties>
+                      </component>
+                      <component id="260f1" class="javax.swing.JSpinner" binding="vehWidth">
+                        <constraints>
+                          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <minimum-size width="-1" height="25"/>
+                            <preferred-size width="25" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Container Width in cm Rounded Up"/>
+                        </properties>
+                      </component>
+                      <component id="ed72a" class="javax.swing.JSpinner" binding="vehLength">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <minimum-size width="-1" height="25"/>
+                            <preferred-size width="25" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Container Length in cm Rounded Up"/>
+                        </properties>
+                      </component>
+                      <component id="c0fd1" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <text value="Length cm"/>
+                        </properties>
+                      </component>
+                      <component id="f529f" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <text value="Width cm"/>
+                        </properties>
+                      </component>
+                      <component id="8cf29" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <text value="Height cm"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="be9d4" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="fa424" class="javax.swing.JSpinner" binding="vehFuelCon">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <minimum-size width="-1" height="25"/>
+                            <preferred-size width="25" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Loaded Fuel Consumption. Average Kilometers per Liter"/>
+                        </properties>
+                      </component>
+                      <component id="9829a" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <text value="Kilometers per Litre"/>
+                        </properties>
+                      </component>
+                      <hspacer id="72e98">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                    </children>
+                  </grid>
+                  <component id="45015" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Maximum Fraight Weight"/>
+                    </properties>
+                  </component>
+                  <component id="21813" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Fuel Consumption"/>
+                    </properties>
+                  </component>
+                  <grid id="84694" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="bb8a2" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font name="Bookshelf Symbol 7"/>
+                          <text value="Kilograms"/>
+                        </properties>
+                      </component>
+                      <component id="464a4" class="javax.swing.JSpinner" binding="vehMaxLoad">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <minimum-size width="-1" height="25"/>
+                            <preferred-size width="25" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <toolTipText value="Maximum Rated Load"/>
+                        </properties>
+                      </component>
+                      <hspacer id="c82d2">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                    </children>
+                  </grid>
+                  <component id="279ba" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Bookshelf Symbol 7" size="16" style="1"/>
+                      <text value="Current Vehicle and Container Infromation"/>
+                    </properties>
+                  </component>
+                  <grid id="18ee4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="24018" class="javax.swing.JButton" binding="vehAdd">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="118" height="40"/>
+                          <text value="Use As Vehicle"/>
+                        </properties>
+                      </component>
+                      <component id="83b69" class="javax.swing.JButton" binding="vehSave">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="121" height="40"/>
+                          <text value="Save As Default"/>
+                        </properties>
+                      </component>
+                      <component id="db9c" class="javax.swing.JButton" binding="vehReset">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="99" height="40"/>
+                          <text value="Clear Fields"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <vspacer id="9e7bc">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </vspacer>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
