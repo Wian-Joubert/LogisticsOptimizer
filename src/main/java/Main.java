@@ -5,8 +5,8 @@ public class Main {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         JFrame frame = new JFrame("Data Entry Form");
