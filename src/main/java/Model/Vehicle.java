@@ -1,38 +1,41 @@
 package Model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Vehicle {
     private final int fuelConsumption;
-    private final int maxWeight;
-    private final int conLength;
-    private final int conWidth;
-    private final int conHeight;
-    private final int conVolume;
+    private final double maxWeight;
+    private final double conLength;
+    private final double conWidth;
+    private final double conHeight;
+    private final BigDecimal conVolume;
 
-    public Vehicle(int fuelConsumption, int maxWeight, int conLength, int conWidth, int conHeight) {
+    public Vehicle(int fuelConsumption, double maxWeight, double conLength, double conWidth, double conHeight) {
         this.fuelConsumption = fuelConsumption;
         this.maxWeight = maxWeight;
         this.conLength = conLength;
         this.conWidth = conWidth;
         this.conHeight = conHeight;
-        this.conVolume = (conLength/100) * (conWidth/100) * (conHeight/100);
+        this.conVolume = new BigDecimal(conLength * conWidth * conHeight).setScale(3, RoundingMode.HALF_UP);
     }
 
     public int getFuelConsumption() {
         return fuelConsumption;
     }
-    public int getMaxWeight() {
+    public double getMaxWeight() {
         return maxWeight;
     }
-    public int getConLength() {
+    public double getConLength() {
         return conLength;
     }
-    public int getConWidth() {
+    public double getConWidth() {
         return conWidth;
     }
-    public int getConHeight() {
+    public double getConHeight() {
         return conHeight;
     }
-    public int getConVolume() {
+    public BigDecimal getConVolume() {
         return conVolume;
     }
 

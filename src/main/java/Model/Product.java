@@ -4,13 +4,13 @@ public class Product {
     private final String name;
     private final String currency;
     private final double value;
-    private final int weight;
-    private final int length;
-    private final int width;
-    private final int height;
-    private final int volume;
+    private final double weight;
+    private final double length;
+    private final double width;
+    private final double height;
+    private final double volume;
 
-    public Product(String name, String currency, double value, int weight, int length, int width, int height){
+    public Product(String name, String currency, double value, double weight, double length, double width, double height){
         this.name = name;
         this.currency = currency;
         this.value = value;
@@ -18,7 +18,7 @@ public class Product {
         this.length = length;
         this.width = width;
         this.height = height;
-        this.volume = length * width * height;
+        this.volume = (length/100) * (width/100) * (height/100);
     }
 
     public String getName() {
@@ -30,19 +30,19 @@ public class Product {
     public double getValue() {
         return value;
     }
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
-    public int getLength() {
+    public double getLength() {
         return length;
     }
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
-    public int getVolume() {
+    public double getVolume() {
         return volume;
     }
 

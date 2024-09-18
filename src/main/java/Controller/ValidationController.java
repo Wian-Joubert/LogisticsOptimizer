@@ -3,7 +3,7 @@ package Controller;
 import Model.ValidationResult;
 
 public class ValidationController {
-    public ValidationResult validateProduct(String name, String currency, double value, int weight, int length, int width, int height){
+    public ValidationResult validateProduct(String name, String currency, double value, double weight, double length, double width, double height){
         if (name.isBlank() || name.isEmpty()){
             return new ValidationResult(false, "Product Name is Empty.");
         }
@@ -28,7 +28,7 @@ public class ValidationController {
         return new ValidationResult(true);
     }
 
-    public ValidationResult validateVehicle(int fuelConsumption, int maxWeight, int conLength, int conWidth, int conHeight){
+    public ValidationResult validateVehicle(int fuelConsumption, double maxWeight, double conLength, double conWidth, double conHeight){
         if (fuelConsumption <= 0){
             return new ValidationResult(false, "Vehicle Fuel Consumption cannot be <= 0.");
         }
