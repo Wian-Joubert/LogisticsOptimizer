@@ -1,17 +1,23 @@
 package View;
 
+import Controller.DistanceMatrixController;
 import Controller.ValidationController;
 import Model.*;
 
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.StyledDocument;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class DataEntry {
     private JPanel rootPanel;
@@ -68,23 +74,14 @@ public class DataEntry {
     private JComboBox vehStandardContainer;
     private JCheckBox vehCustomContainer;
 
-    private final DefaultTableModel productModel;
-    private final DefaultTableModel routeModel;
-    private final StyledDocument vehicleDoc;
+    private DefaultTableModel productModel;
+    private DefaultTableModel routeModel;
+    private StyledDocument vehicleDoc;
     private final Logger logger = LoggerFactory.getLogger(DataEntry.class);
     ValidationController vc = new ValidationController();
 
     public DataEntry() {
-        //Init Tables
-        String[] prodColumns = {"Name", "Currency", "Value", "Weight", "Length", "Width", "Height", "Volume"};
-        productModel = new DefaultTableModel(prodColumns, 0);
-        prodTable.setModel(productModel);
-
-        String[] routeColumns = {"Street", "City", "Town", "Post Code"};
-        routeModel = new DefaultTableModel(routeColumns, 0);
-        routeTable.setModel(routeModel);
-
-        vehicleDoc = vehDetailsPane.getStyledDocument();
+        initTables();
 
         prodAdd.addActionListener(new ActionListener() {
             @Override
@@ -111,6 +108,8 @@ public class DataEntry {
                 if (place != null){
                     addRouteToTable(place);
                 }
+                clearRoute();
+                roStreet.requestFocus();
             }
         });
         vehStandardContainer.addActionListener(new ActionListener() {
@@ -293,9 +292,37 @@ public class DataEntry {
         calculateOptimalSolutionsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                ArrayList<Place> places = getPlaces();
+                DistanceMatrixController distanceMatrixController = new DistanceMatrixController();
+                DistanceMatrix distanceMatrix = distanceMatrixController.distanceMatrixCall(places);
+                for (DistanceMatrixRow row : distanceMatrix.rows){
+                    for (DistanceMatrixElement element : row.elements){
+                        logger.info(element.distance.humanReadable);
+                    }
+                    logger.info("");
+                }
             }
         });
+        btnSettings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Settings settingsFrame = new Settings();
+                settingsFrame.setVisible(true);
+            }
+        });
+    }
+
+    private void initTables(){
+        //Init Tables
+        String[] prodColumns = {"Name", "Currency", "Value", "Weight", "Length", "Width", "Height", "Volume"};
+        productModel = new DefaultTableModel(prodColumns, 0);
+        prodTable.setModel(productModel);
+
+        String[] routeColumns = {"Street", "City", "Town", "Post Code"};
+        routeModel = new DefaultTableModel(routeColumns, 0);
+        routeTable.setModel(routeModel);
+
+        vehicleDoc = vehDetailsPane.getStyledDocument();
     }
 
     private void clearRoute(){

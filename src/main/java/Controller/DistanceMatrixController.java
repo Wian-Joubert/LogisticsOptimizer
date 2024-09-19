@@ -12,10 +12,15 @@ import java.util.ArrayList;
 
 public class DistanceMatrixController {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrixController.class);
-    private static final String API_KEY = "";
+    FileController fileController = new FileController();
 
     public DistanceMatrix distanceMatrixCall(ArrayList<Place> places){
         try {
+            String API_KEY = fileController.readApiKey();
+            if (API_KEY == null){
+                throw new RuntimeException("No API Key found.");
+            }
+
             GeoApiContext context = new GeoApiContext.Builder()
                     .apiKey(API_KEY)
                     .build();

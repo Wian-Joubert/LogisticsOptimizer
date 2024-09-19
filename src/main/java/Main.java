@@ -10,7 +10,7 @@ public class Main {
             ex.printStackTrace();
         }
 
-        JFrame frame = new JFrame("Data Entry Form");
+        JFrame frame = new JFrame("Logistics Optimizer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         View.DataEntry dataEntry = new View.DataEntry();

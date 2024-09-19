@@ -1,7 +1,7 @@
 package Model;
 
 public class ValidationResult {
-    private boolean isValid;
+    private final boolean isValid;
     private String message;
 
     public ValidationResult(boolean isValid) {
