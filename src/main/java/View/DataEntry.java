@@ -1,6 +1,7 @@
 package View;
 
 import Controller.DistanceMatrixController;
+import Controller.RouteController;
 import Controller.ValidationController;
 import Model.*;
 
@@ -295,12 +296,8 @@ public class DataEntry {
                 ArrayList<Place> places = getPlaces();
                 DistanceMatrixController distanceMatrixController = new DistanceMatrixController();
                 DistanceMatrix distanceMatrix = distanceMatrixController.distanceMatrixCall(places);
-                for (DistanceMatrixRow row : distanceMatrix.rows){
-                    for (DistanceMatrixElement element : row.elements){
-                        logger.info(element.distance.humanReadable);
-                    }
-                    logger.info("");
-                }
+                RouteController routeController = new RouteController();
+                routeController.calculateTraveling(distanceMatrix);
             }
         });
         btnSettings.addActionListener(new ActionListener() {
