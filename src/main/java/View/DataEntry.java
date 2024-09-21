@@ -6,19 +6,15 @@ import Controller.ValidationController;
 import Model.*;
 
 import com.google.maps.model.DistanceMatrix;
-import com.google.maps.model.DistanceMatrixElement;
-import com.google.maps.model.DistanceMatrixRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import javax.swing.text.StyledDocument;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class DataEntry {
     private JPanel rootPanel;
@@ -570,6 +566,7 @@ public class DataEntry {
             Place place = new Place(streetAddress, town, city, postcode);
             places.add(place);
         }
+
         return places;
     }
 

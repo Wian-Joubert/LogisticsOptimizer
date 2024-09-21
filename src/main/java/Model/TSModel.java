@@ -1,5 +1,6 @@
 package Model;
 
+import javax.swing.*;
 import java.util.Arrays;
 
 public class TSModel {
@@ -10,13 +11,17 @@ public class TSModel {
     private int[] decisionArray;
     private int[] optimalSolution;
     private double objectiveValue = 100000;
+    private final int numLocations;
 
     // Updated constructor to accept numberOfLocations
-    public TSModel(double[] objectiveFunction, int[][] subjectToMatrix, String[] signArray, int[] rhsArray) {
+    public TSModel(double[] objectiveFunction, int[][] subjectToMatrix, String[] signArray, int[] rhsArray, int numLocations) {
         this.objectiveFunction = objectiveFunction;
+        //JOptionPane.showMessageDialog(null, "objectiveFunction length: " + objectiveFunction.length);
         this.subjectToMatrix = subjectToMatrix;
+        //JOptionPane.showMessageDialog(null, "subjectToMatrix length: " + subjectToMatrix[0].length);
         this.signArray = signArray;
         this.rhsArray = rhsArray;
+        this.numLocations = numLocations;
         calculateOptimalRoute();
     }
 
@@ -46,6 +51,7 @@ public class TSModel {
 
     private void calculateOptimalRoute() {
         decisionArray = new int[objectiveFunction.length];
+        //JOptionPane.showMessageDialog(null, "decisionArray length: " + decisionArray.length);
         optimalSolution = new int[objectiveFunction.length];
         explorePermutations(0);
     }
@@ -53,13 +59,14 @@ public class TSModel {
     private void explorePermutations(int index) {
         // Check if we are at the end of the decision array
         if (index == decisionArray.length) {
-            if (!hasSelfLoop() && meetsConstraints()) {
+            if (!hasSelfLoop() && meetsConstraints() && !hasImmediateReturn()) {
                 double currentObjectiveValue = calculateObjectiveValue();
                 if (currentObjectiveValue < objectiveValue) {
                     objectiveValue = currentObjectiveValue;
                     System.arraycopy(decisionArray, 0, optimalSolution, 0, decisionArray.length);
                     System.out.println("New optimal solution found: " + arrayToString(optimalSolution) +
                             " with objective value: " + currentObjectiveValue);
+                    printRouteInterpretation(optimalSolution);
                 }
             }
             return;
@@ -71,12 +78,42 @@ public class TSModel {
             return;
         }
 
+        // Calculate the row and column based on the flattened index
+        int row = index / numLocations;
+        int col = index % numLocations;
+
+        // Stop counting before the dummy variables (U_n-1), i.e., ignore the last n-1 columns
+        int numValidCols = numLocations - (numLocations - 1);  // This excludes the dummy variables
+
+        // Skip if more than one "1" is already in the valid columns for the current row
+        int countOnes = 0;
+        for (int i = row * numLocations; i < (row * numLocations) + numValidCols; i++) {
+            if (decisionArray[i] == 1) {
+                countOnes++;
+            }
+            if (countOnes > 1) {
+                return; // Skip further exploration if more than one "1" is present
+            }
+        }
+
         // Loop to set the current index to 0 or 1
         for (int value : new int[]{0, 1}) {
             decisionArray[index] = value;
             explorePermutations(index + 1);
         }
     }
+
+    private boolean hasImmediateReturn() {
+        for (int i = 0; i < numLocations; i++) {
+            for (int j = 0; j < numLocations; j++) {
+                if (decisionArray[i * numLocations + j] == 1 && decisionArray[j * numLocations + i] == 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     private String arrayToString(int[] array) {
         StringBuilder sb = new StringBuilder("[");
@@ -133,6 +170,39 @@ public class TSModel {
             sumProduct += decisionArray[i] * objectiveFunction[i];
         }
         return sumProduct;
+    }
+
+    public void printRouteInterpretation(int[] decisionArray) {
+        StringBuilder route = new StringBuilder("L1");
+        int currentLocation = 0; // Start at L1
+        boolean[] visited = new boolean[numLocations]; // Track visited locations
+        visited[currentLocation] = true; // Mark L1 as visited
+
+        // Find the route based on the decision array
+        while (true) {
+            boolean foundNext = false;
+
+            for (int j = 0; j < numLocations; j++) {
+                // Calculate the index in the decision array for the edge x_ij
+                int index = currentLocation * numLocations + j;
+
+                // Check if there's a connection from currentLocation to j
+                if (index < decisionArray.length && decisionArray[index] == 1 && !visited[j]) {
+                    // Append the next location to the route
+                    route.append(" -> L").append(j + 1);
+                    currentLocation = j; // Move to the next location
+                    visited[currentLocation] = true; // Mark the new location as visited
+                    foundNext = true;
+                    break; // Exit the loop to start from the new currentLocation
+                }
+            }
+            // Break if no next location was found
+            if (!foundNext) {
+                break;
+            }
+        }
+        // Print the resulting route
+        System.out.println("Route: " + route.toString() + " -> L1");
     }
 
     @Override

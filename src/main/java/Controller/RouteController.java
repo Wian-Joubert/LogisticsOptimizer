@@ -16,6 +16,7 @@ public class RouteController {
     int[][] leaveMatrix;
     int[][] subTourMatrix;
     int[][] selfLoopMatrix;
+    int numLocations;
 
     public void calculateTraveling(DistanceMatrix distanceMatrix) {
         try {
@@ -23,29 +24,44 @@ public class RouteController {
                 throw new RuntimeException("Distance Matrix is Null.");
             }
 
-            //Create constraints
+            // Create constraints
             objectiveMatrix = distanceMatrixTo2DArray(distanceMatrix);
+            System.out.println("objectiveMatrix created");
+            numLocations = objectiveMatrix.length;
             arriveMatrix = arriveConstraints(objectiveMatrix);
+            System.out.println("arriveMatrix created");
             leaveMatrix = leaveConstraints(objectiveMatrix);
-            subTourMatrix = subTourConstraints(objectiveMatrix);
+            System.out.println("leaveMatrix created");
+            subTourMatrix = subTourConstraints(objectiveMatrix);  // Sub-tour matrix might be null
+            System.out.println("subTourMatrix created");
             selfLoopMatrix = selfLoopConstrains(objectiveMatrix);
+            System.out.println("selfLoopMatrix created");
 
-            //Equalize lengths
-            int largerMatrixLength = subTourMatrix[0].length;
+            // Equalize lengths
+            // Equalize lengths
+            int largerMatrixLength = Math.max(arriveMatrix[0].length,
+                    Math.max(leaveMatrix[0].length,
+                            Math.max(selfLoopMatrix[0].length,
+                                    subTourMatrix != null ? subTourMatrix[0].length : 0)));
             double[] flatObjective = flatten2DArray(objectiveMatrix);
             flatObjective = equalize1DArraySizes(flatObjective, largerMatrixLength);
             arriveMatrix = equalize2DArraySizes(arriveMatrix, largerMatrixLength);
             leaveMatrix = equalize2DArraySizes(leaveMatrix, largerMatrixLength);
             selfLoopMatrix = equalize2DArraySizes(selfLoopMatrix, largerMatrixLength);
 
-            //Construct signs and RHS
+            // If subTourMatrix is not null, equalize its size too
+            if (subTourMatrix != null) {
+                subTourMatrix = equalize2DArraySizes(subTourMatrix, largerMatrixLength);
+            }
+
+            // Construct signs and RHS
             String[] signsArray = constructSigns(arriveMatrix, leaveMatrix, subTourMatrix, selfLoopMatrix);
             int[] rhsArray = constructRHS(arriveMatrix, leaveMatrix, subTourMatrix, selfLoopMatrix, objectiveMatrix.length);
 
-            //Merge arrays
+            // Merge arrays, excluding subTourMatrix if it's null
             int[][] subjectToMatrix = concatenateMatrices(arriveMatrix, leaveMatrix, subTourMatrix, selfLoopMatrix);
 
-            TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray);
+            TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray, numLocations);
             System.out.println(tsModel.toString());
 
         } catch (RuntimeException ex) {
@@ -57,7 +73,7 @@ public class RouteController {
     private int[][] concatenateMatrices(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
         int arriveRows = arriveMatrix.length;
         int leaveRows = leaveMatrix.length;
-        int subTourRows = subTourMatrix.length;
+        int subTourRows = (subTourMatrix != null) ? subTourMatrix.length : 0;
         int selfLoopRows = selfLoopMatrix.length;
 
         int numColumns = arriveMatrix[0].length; // Assuming all matrices have the same number of columns
@@ -73,9 +89,11 @@ public class RouteController {
         for (int i = 0; i < leaveRows; i++) {
             System.arraycopy(leaveMatrix[i], 0, appendedMatrix[arriveRows + i], 0, numColumns);
         }
-        // Copy subTourMatrix rows
-        for (int i = 0; i < subTourRows; i++) {
-            System.arraycopy(subTourMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + i], 0, numColumns);
+        // Copy subTourMatrix rows, if not null
+        if (subTourMatrix != null) {
+            for (int i = 0; i < subTourRows; i++) {
+                System.arraycopy(subTourMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + i], 0, numColumns);
+            }
         }
         // Copy selfLoopMatrix rows
         for (int i = 0; i < selfLoopRows; i++) {
@@ -87,7 +105,7 @@ public class RouteController {
     private int[] constructRHS(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix, int numLocations) {
         int arriveLength = arriveMatrix.length;
         int leaveLength = leaveMatrix.length;
-        int subTourLength = subTourMatrix.length;
+        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
         int selfLoopLength = selfLoopMatrix.length;
         int rhsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
 
@@ -97,9 +115,11 @@ public class RouteController {
         for (int i = 0; i < arriveLength + leaveLength; i++) {
             rhsArray[i] = 1;
         }
-        // Second part: sub-tour elimination constraints have RHS of numLocations - 1
-        for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
-            rhsArray[i] = numLocations - 1;
+        // Second part: sub-tour elimination constraints have RHS of numLocations - 1 (if subTourMatrix is not null)
+        if (subTourMatrix != null) {
+            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
+                rhsArray[i] = numLocations - 1;
+            }
         }
         // Third part: self-loop constraints (i = j) should have RHS of 0
         for (int i = arriveLength + leaveLength + subTourLength; i < rhsLength; i++) {
@@ -111,7 +131,7 @@ public class RouteController {
     private String[] constructSigns(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
         int arriveLength = arriveMatrix.length;
         int leaveLength = leaveMatrix.length;
-        int subTourLength = subTourMatrix.length;
+        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
         int selfLoopLength = selfLoopMatrix.length;
         int signsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
 
@@ -121,9 +141,11 @@ public class RouteController {
         for (int i = 0; i < arriveLength + leaveLength; i++) {
             signArray[i] = "=";
         }
-        // Second part: sub-tour constraints use "<="
-        for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
-            signArray[i] = "<=";
+        // Second part: sub-tour constraints use "<=" (if subTourMatrix is not null)
+        if (subTourMatrix != null) {
+            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
+                signArray[i] = "<=";
+            }
         }
         // Third part: self-loop constraints (i = j) use "="
         for (int i = arriveLength + leaveLength + subTourLength; i < signsLength; i++) {
@@ -263,21 +285,34 @@ public class RouteController {
      */
     private int[][] subTourConstraints(double[][] objectiveMatrix) {
         int rowElements = objectiveMatrix.length;
+
+        // Return null matrix for problems with fewer than 4 locations
+        if (rowElements < 4) {
+            return null;
+        }
+
         int totalElements = getTotalElements(objectiveMatrix);
         int[][] constraintsMatrix = constructSubTourMatrix(rowElements);
+        System.out.println("subTour Constraint Matrix Init. Length: " + constraintsMatrix[0].length);
 
         int constraintRow = 0;
+        int constraintsRowLength = constraintsMatrix[0].length;
 
-        // Populate the sub-tour constraints for Locations 2 through n
-        for (int i = 1; i < rowElements; i++) {  // Loop over Location (skipping city 1)
-            for (int j = 1; j < rowElements; j++) {  // Loop over Location, avoiding diagonal (i != j)
+        // Populate the sub-tour constraints for Locations 3 through n
+        for (int i = 2; i < rowElements; i++) {  // Loop over Location (skipping Location 1 and 2)
+            for (int j = 2; j < rowElements; j++) {  // Loop over Location, avoiding diagonal (i != j)
                 if (i != j) {
                     // Sub-tour elimination constraint for x_ij
-                    constraintsMatrix[constraintRow][i * rowElements + j] = rowElements;  // Coefficient for x_ij (Number of given Locations)
+                    constraintsMatrix[constraintRow][i * rowElements + j] = rowElements;  // Coefficient for x_ij
 
-                    // Assign auxiliary variables for Ui and Uj
-                    constraintsMatrix[constraintRow][totalElements + i - 1] = 1;  // Ui term (U_i)
-                    constraintsMatrix[constraintRow][totalElements + j - 1] = -1; // Uj term (U_j)
+                    // Ensure the auxiliary variable indices are correctly calculated
+                    if (totalElements + i - 1 < constraintsRowLength) {
+                        constraintsMatrix[constraintRow][totalElements + i - 1] = 1;  // Ui term (U_i)
+                    }
+
+                    if (totalElements + j - 1 < constraintsRowLength) {
+                        constraintsMatrix[constraintRow][totalElements + j - 1] = -1; // Uj term (U_j)
+                    }
 
                     // Move to the next row for the next constraint
                     constraintRow++;
@@ -288,10 +323,10 @@ public class RouteController {
     }
 
     private int[][] constructSubTourMatrix(int rowElements) {
-        int numAuxVars = rowElements - 1;  // Auxiliary variables (U2, U3, ..., Un)
+        int numAuxVars = rowElements - 2;  // Auxiliary variables (U3, U4, ..., Un)
 
         // Calculate the number of sub-tour elimination constraints
-        int numConstraints = (rowElements - 2) * (rowElements - 1);  // Sub-tours excluding Location 1 and x_i1 constraints
+        int numConstraints = (rowElements - 3) * (rowElements - 2);  // Sub-tours excluding Location 1, Location 2, and x_i1, x_i2 constraints
         int numColumns = rowElements * rowElements + numAuxVars;
 
         // Initialize the constraints matrix (rows: sub-tour constraints, columns: x_ij variables + aux variables)
