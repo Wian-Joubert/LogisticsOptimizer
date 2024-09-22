@@ -1,6 +1,5 @@
 package Model;
 
-import javax.swing.*;
 import java.util.Arrays;
 
 public class TSModel {
@@ -13,12 +12,9 @@ public class TSModel {
     private double objectiveValue = 100000;
     private final int numLocations;
 
-    // Updated constructor to accept numberOfLocations
     public TSModel(double[] objectiveFunction, int[][] subjectToMatrix, String[] signArray, int[] rhsArray, int numLocations) {
         this.objectiveFunction = objectiveFunction;
-        //JOptionPane.showMessageDialog(null, "objectiveFunction length: " + objectiveFunction.length);
         this.subjectToMatrix = subjectToMatrix;
-        //JOptionPane.showMessageDialog(null, "subjectToMatrix length: " + subjectToMatrix[0].length);
         this.signArray = signArray;
         this.rhsArray = rhsArray;
         this.numLocations = numLocations;
@@ -80,8 +76,6 @@ public class TSModel {
 
         // Calculate the row and column based on the flattened index
         int row = index / numLocations;
-        int col = index % numLocations;
-
         // Stop counting before the dummy variables (U_n-1), i.e., ignore the last n-1 columns
         int numValidCols = numLocations - (numLocations - 1);  // This excludes the dummy variables
 
@@ -158,7 +152,6 @@ public class TSModel {
                         return false; // Constraint violated
                     }
                     break;
-                // Add more cases if you have other types of constraints
             }
         }
         return true; // All constraints are satisfied
@@ -222,22 +215,16 @@ public class TSModel {
             }
             builder.append("\n");
         }
-
         // Sign Array
         builder.append("  Sign Array: ").append(Arrays.toString(signArray)).append("\n");
-
         // RHS Array
         builder.append("  RHS Array: ").append(Arrays.toString(rhsArray)).append("\n");
-
         // Decision Array
         builder.append("  Decision Array: ").append(Arrays.toString(decisionArray)).append("\n");
-
         // Optimal Solution
         builder.append("  Optimal Solution: ").append(Arrays.toString(optimalSolution)).append("\n");
-
         // Objective Value
         builder.append("  Objective Value: ").append(objectiveValue).append("\n");
-
         builder.append("}");
         return builder.toString();
     }

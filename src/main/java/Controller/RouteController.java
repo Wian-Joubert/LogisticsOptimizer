@@ -26,18 +26,12 @@ public class RouteController {
 
             // Create constraints
             objectiveMatrix = distanceMatrixTo2DArray(distanceMatrix);
-            System.out.println("objectiveMatrix created");
             numLocations = objectiveMatrix.length;
             arriveMatrix = arriveConstraints(objectiveMatrix);
-            System.out.println("arriveMatrix created");
             leaveMatrix = leaveConstraints(objectiveMatrix);
-            System.out.println("leaveMatrix created");
             subTourMatrix = subTourConstraints(objectiveMatrix);  // Sub-tour matrix might be null
-            System.out.println("subTourMatrix created");
             selfLoopMatrix = selfLoopConstrains(objectiveMatrix);
-            System.out.println("selfLoopMatrix created");
-
-            // Equalize lengths
+            
             // Equalize lengths
             int largerMatrixLength = Math.max(arriveMatrix[0].length,
                     Math.max(leaveMatrix[0].length,
@@ -68,154 +62,6 @@ public class RouteController {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Calculation Error", JOptionPane.ERROR_MESSAGE);
             logger.error("Route Calculation Error: {}", ex.getMessage());
         }
-    }
-
-    private int[][] concatenateMatrices(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
-        int arriveRows = arriveMatrix.length;
-        int leaveRows = leaveMatrix.length;
-        int subTourRows = (subTourMatrix != null) ? subTourMatrix.length : 0;
-        int selfLoopRows = selfLoopMatrix.length;
-
-        int numColumns = arriveMatrix[0].length; // Assuming all matrices have the same number of columns
-        int totalRows = arriveRows + leaveRows + subTourRows + selfLoopRows;
-
-        int[][] appendedMatrix = new int[totalRows][numColumns];
-
-        // Copy arriveMatrix rows
-        for (int i = 0; i < arriveRows; i++) {
-            System.arraycopy(arriveMatrix[i], 0, appendedMatrix[i], 0, numColumns);
-        }
-        // Copy leaveMatrix rows
-        for (int i = 0; i < leaveRows; i++) {
-            System.arraycopy(leaveMatrix[i], 0, appendedMatrix[arriveRows + i], 0, numColumns);
-        }
-        // Copy subTourMatrix rows, if not null
-        if (subTourMatrix != null) {
-            for (int i = 0; i < subTourRows; i++) {
-                System.arraycopy(subTourMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + i], 0, numColumns);
-            }
-        }
-        // Copy selfLoopMatrix rows
-        for (int i = 0; i < selfLoopRows; i++) {
-            System.arraycopy(selfLoopMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + subTourRows + i], 0, numColumns);
-        }
-        return appendedMatrix;
-    }
-
-    private int[] constructRHS(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix, int numLocations) {
-        int arriveLength = arriveMatrix.length;
-        int leaveLength = leaveMatrix.length;
-        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
-        int selfLoopLength = selfLoopMatrix.length;
-        int rhsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
-
-        int[] rhsArray = new int[rhsLength];
-
-        // First part: arrive and leave matrices should have RHS of 1
-        for (int i = 0; i < arriveLength + leaveLength; i++) {
-            rhsArray[i] = 1;
-        }
-        // Second part: sub-tour elimination constraints have RHS of numLocations - 1 (if subTourMatrix is not null)
-        if (subTourMatrix != null) {
-            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
-                rhsArray[i] = numLocations - 1;
-            }
-        }
-        // Third part: self-loop constraints (i = j) should have RHS of 0
-        for (int i = arriveLength + leaveLength + subTourLength; i < rhsLength; i++) {
-            rhsArray[i] = 0;
-        }
-        return rhsArray;
-    }
-
-    private String[] constructSigns(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
-        int arriveLength = arriveMatrix.length;
-        int leaveLength = leaveMatrix.length;
-        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
-        int selfLoopLength = selfLoopMatrix.length;
-        int signsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
-
-        String[] signArray = new String[signsLength];
-
-        // First part: arrive and leave constraints use "="
-        for (int i = 0; i < arriveLength + leaveLength; i++) {
-            signArray[i] = "=";
-        }
-        // Second part: sub-tour constraints use "<=" (if subTourMatrix is not null)
-        if (subTourMatrix != null) {
-            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
-                signArray[i] = "<=";
-            }
-        }
-        // Third part: self-loop constraints (i = j) use "="
-        for (int i = arriveLength + leaveLength + subTourLength; i < signsLength; i++) {
-            signArray[i] = "=";
-        }
-        return signArray;
-    }
-
-    private double[] flatten2DArray(double[][] matrix) {
-        int numRows = matrix.length;  // Number of rows in the 2D array
-        int numCols = matrix[0].length;  // Number of columns in the 2D array (assumed consistent for all rows)
-
-        // Create a 1D array with a size equal to the total number of elements in the 2D array
-        double[] flattenedArray = new double[numRows * numCols];
-
-        // Index for tracking the position in the 1D array
-        int index = 0;
-
-        // Loop through each row and column of the 2D array
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                // Copy each element from the 2D array into the 1D array
-                flattenedArray[index++] = matrix[i][j];
-            }
-        }
-
-        return flattenedArray;  // Return the flattened 1D array
-    }
-
-    private double[] equalize1DArraySizes(double[] smallerMatrix, int largerMatrixLength){
-        if (smallerMatrix.length >= largerMatrixLength) {
-            return smallerMatrix;
-        }
-
-        double[] largerMatrix = new double[largerMatrixLength];
-        System.arraycopy(smallerMatrix, 0, largerMatrix, 0, smallerMatrix.length);
-
-        return largerMatrix;
-    }
-
-    private int[][] equalize2DArraySizes(int[][] smallerMatrix, int largerMatrixLength) {
-        int smallerRowLength = smallerMatrix[0].length;
-        int numRows = smallerMatrix.length;
-
-        int[][] equalizedMatrix = new int[numRows][largerMatrixLength];
-
-        // Loop through each row of the smaller matrix
-        for (int i = 0; i < numRows; i++) {
-            // Copy the contents of the current row from the smaller matrix to the new matrix
-            System.arraycopy(smallerMatrix[i], 0, equalizedMatrix[i], 0, smallerRowLength);
-        }
-        return equalizedMatrix;  // Return the new matrix with equalized row lengths
-    }
-
-    private int[][] selfLoopConstrains(double[][] objectiveMatrix) {
-        int n = objectiveMatrix.length;
-        int[][] selfLoopMatrix = new int[n][n * n]; // n rows, n * n columns
-
-        // Loop to populate the selfLoopMatrix
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j) {
-                    // Set the corresponding diagonal element in the block of n*n elements
-                    selfLoopMatrix[i][i * n + j] = 1;
-                } else {
-                    selfLoopMatrix[i][i * n + j] = 0;
-                }
-            }
-        }
-        return selfLoopMatrix;
     }
 
     /**
@@ -322,6 +168,76 @@ public class RouteController {
         return constraintsMatrix;
     }
 
+    private int[][] selfLoopConstrains(double[][] objectiveMatrix) {
+        int n = objectiveMatrix.length;
+        int[][] selfLoopMatrix = new int[n][n * n]; // n rows, n * n columns
+
+        // Loop to populate the selfLoopMatrix
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    // Set the corresponding diagonal element in the block of n*n elements
+                    selfLoopMatrix[i][i * n + j] = 1;
+                } else {
+                    selfLoopMatrix[i][i * n + j] = 0;
+                }
+            }
+        }
+        return selfLoopMatrix;
+    }
+
+    private int[] constructRHS(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix, int numLocations) {
+        int arriveLength = arriveMatrix.length;
+        int leaveLength = leaveMatrix.length;
+        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
+        int selfLoopLength = selfLoopMatrix.length;
+        int rhsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
+
+        int[] rhsArray = new int[rhsLength];
+
+        // First part: arrive and leave matrices should have RHS of 1
+        for (int i = 0; i < arriveLength + leaveLength; i++) {
+            rhsArray[i] = 1;
+        }
+        // Second part: sub-tour elimination constraints have RHS of numLocations - 1 (if subTourMatrix is not null)
+        if (subTourMatrix != null) {
+            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
+                rhsArray[i] = numLocations - 1;
+            }
+        }
+        // Third part: self-loop constraints (i = j) should have RHS of 0
+        for (int i = arriveLength + leaveLength + subTourLength; i < rhsLength; i++) {
+            rhsArray[i] = 0;
+        }
+        return rhsArray;
+    }
+
+    private String[] constructSigns(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
+        int arriveLength = arriveMatrix.length;
+        int leaveLength = leaveMatrix.length;
+        int subTourLength = (subTourMatrix != null) ? subTourMatrix.length : 0;
+        int selfLoopLength = selfLoopMatrix.length;
+        int signsLength = arriveLength + leaveLength + subTourLength + selfLoopLength;
+
+        String[] signArray = new String[signsLength];
+
+        // First part: arrive and leave constraints use "="
+        for (int i = 0; i < arriveLength + leaveLength; i++) {
+            signArray[i] = "=";
+        }
+        // Second part: sub-tour constraints use "<=" (if subTourMatrix is not null)
+        if (subTourMatrix != null) {
+            for (int i = arriveLength + leaveLength; i < arriveLength + leaveLength + subTourLength; i++) {
+                signArray[i] = "<=";
+            }
+        }
+        // Third part: self-loop constraints (i = j) use "="
+        for (int i = arriveLength + leaveLength + subTourLength; i < signsLength; i++) {
+            signArray[i] = "=";
+        }
+        return signArray;
+    }
+
     private int[][] constructSubTourMatrix(int rowElements) {
         int numAuxVars = rowElements - 2;  // Auxiliary variables (U3, U4, ..., Un)
 
@@ -374,6 +290,84 @@ public class RouteController {
         } catch (NumberFormatException ex) {
             throw new RuntimeException("Error Converting Distance in Distance Matrix to Double: " + ex.getMessage(), ex);
         }
+    }
+
+    private int[][] concatenateMatrices(int[][] arriveMatrix, int[][] leaveMatrix, int[][] subTourMatrix, int[][] selfLoopMatrix) {
+        int arriveRows = arriveMatrix.length;
+        int leaveRows = leaveMatrix.length;
+        int subTourRows = (subTourMatrix != null) ? subTourMatrix.length : 0;
+        int selfLoopRows = selfLoopMatrix.length;
+
+        int numColumns = arriveMatrix[0].length; // Assuming all matrices have the same number of columns
+        int totalRows = arriveRows + leaveRows + subTourRows + selfLoopRows;
+
+        int[][] appendedMatrix = new int[totalRows][numColumns];
+
+        // Copy arriveMatrix rows
+        for (int i = 0; i < arriveRows; i++) {
+            System.arraycopy(arriveMatrix[i], 0, appendedMatrix[i], 0, numColumns);
+        }
+        // Copy leaveMatrix rows
+        for (int i = 0; i < leaveRows; i++) {
+            System.arraycopy(leaveMatrix[i], 0, appendedMatrix[arriveRows + i], 0, numColumns);
+        }
+        // Copy subTourMatrix rows, if not null
+        if (subTourMatrix != null) {
+            for (int i = 0; i < subTourRows; i++) {
+                System.arraycopy(subTourMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + i], 0, numColumns);
+            }
+        }
+        // Copy selfLoopMatrix rows
+        for (int i = 0; i < selfLoopRows; i++) {
+            System.arraycopy(selfLoopMatrix[i], 0, appendedMatrix[arriveRows + leaveRows + subTourRows + i], 0, numColumns);
+        }
+        return appendedMatrix;
+    }
+
+    private double[] flatten2DArray(double[][] matrix) {
+        int numRows = matrix.length;  // Number of rows in the 2D array
+        int numCols = matrix[0].length;  // Number of columns in the 2D array (assumed consistent for all rows)
+
+        // Create a 1D array with a size equal to the total number of elements in the 2D array
+        double[] flattenedArray = new double[numRows * numCols];
+
+        // Index for tracking the position in the 1D array
+        int index = 0;
+
+        // Loop through each row and column of the 2D array
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                // Copy each element from the 2D array into the 1D array
+                flattenedArray[index++] = matrix[i][j];
+            }
+        }
+
+        return flattenedArray;  // Return the flattened 1D array
+    }
+
+    private double[] equalize1DArraySizes(double[] smallerMatrix, int largerMatrixLength){
+        if (smallerMatrix.length >= largerMatrixLength) {
+            return smallerMatrix;
+        }
+
+        double[] largerMatrix = new double[largerMatrixLength];
+        System.arraycopy(smallerMatrix, 0, largerMatrix, 0, smallerMatrix.length);
+
+        return largerMatrix;
+    }
+
+    private int[][] equalize2DArraySizes(int[][] smallerMatrix, int largerMatrixLength) {
+        int smallerRowLength = smallerMatrix[0].length;
+        int numRows = smallerMatrix.length;
+
+        int[][] equalizedMatrix = new int[numRows][largerMatrixLength];
+
+        // Loop through each row of the smaller matrix
+        for (int i = 0; i < numRows; i++) {
+            // Copy the contents of the current row from the smaller matrix to the new matrix
+            System.arraycopy(smallerMatrix[i], 0, equalizedMatrix[i], 0, smallerRowLength);
+        }
+        return equalizedMatrix;  // Return the new matrix with equalized row lengths
     }
 
     private int getTotalElements(double[][] objectiveMatrix) {
