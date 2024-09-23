@@ -1,0 +1,4 @@
+Place{street='37 Bantry Rd', town='Bryanston', city='Johannesburg', postcode='2191'}
+Place{street='11 Hospital St', town='Braamfontein', city='Johannesburg', postcode='2017'}
+Place{street='2nd October Dr', town='Ivory Park', city='Midrand', postcode='1693'}
+Place{street='16 Rigel St', town='Fishers Hill', city='Germiston', postcode='1401'}

@@ -430,18 +430,6 @@
                       </component>
                     </children>
                   </grid>
-                  <component id="1861" class="javax.swing.JTextField" binding="roStreet">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="25"/>
-                      </grid>
-                    </constraints>
-                    <properties>
-                      <background color="-14869219"/>
-                      <opaque value="false"/>
-                      <toolTipText value="*REQUIRED*: Street Adress .e.g 12 Logistics St"/>
-                    </properties>
-                  </component>
                   <component id="e8810" class="javax.swing.JTextField" binding="roTown">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -492,7 +480,6 @@
                     </constraints>
                     <properties>
                       <font name="Bookshelf Symbol 7" size="16" style="1"/>
-                      <labelFor value="1861"/>
                       <text value="Street Address"/>
                     </properties>
                   </component>
@@ -554,6 +541,30 @@
                     </properties>
                     <border type="none"/>
                     <children/>
+                  </grid>
+                  <grid id="ef4aa" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <opaque value="false"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="db497" class="javax.swing.JTextField" binding="roStreet">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <background color="-14869219"/>
+                          <opaque value="false"/>
+                        </properties>
+                      </component>
+                      <component id="e039c" class="javax.swing.JButton" binding="inputGoogleAdress">
+                        <constraints border-constraint="East"/>
+                        <properties>
+                          <text value="Google Copy"/>
+                        </properties>
+                      </component>
+                    </children>
                   </grid>
                 </children>
               </grid>
@@ -913,7 +924,7 @@
                     <constraints/>
                     <properties>
                       <preferredSize width="164" height="35"/>
-                      <text value="Save as Vehicle Default"/>
+                      <text value="Save Vehicle"/>
                     </properties>
                   </component>
                   <component id="fe950" class="javax.swing.JButton" binding="loadVehicle">

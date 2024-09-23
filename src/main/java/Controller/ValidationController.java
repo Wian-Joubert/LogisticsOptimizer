@@ -2,7 +2,16 @@ package Controller;
 
 import Model.ValidationResult;
 
+import java.util.regex.Pattern;
+
 public class ValidationController {
+    private static final String[] RESERVED_NAMES = {
+            "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+    };
+    private static final String INVALID_CHARACTERS_REGEX = "[\\\\/:*?\"<>|]";
+    private static final String STREET_PATTERN = ".*\\d+.*\\s+.*\\s+(St|Ave|Rd|Blvd|Ln|Dr|Pl|Ct|Terr|Way|Pkwy|Cir)$";
+
     public ValidationResult validateProduct(String name, String currency, double value, double weight, double length, double width, double height){
         if (name.isBlank() || name.isEmpty()){
             return new ValidationResult(false, "Product Name is Empty.");
@@ -51,8 +60,7 @@ public class ValidationController {
         if (street.isEmpty() || street.isBlank()){
             return new ValidationResult(false, "Street cannot be Empty.");
         }
-        String streetPattern = ".*\\d+.*\\s+.*\\s+(St|Ave|Rd|Blvd|Ln|Dr|Pl|Ct|Terr|Way|Pkwy|Cir)$";
-        if (!street.matches(streetPattern)) {
+        if (!street.matches(STREET_PATTERN)) {
             return new ValidationResult(false, "Street must contain a Number, Street Name, and a Valid Road Type.");
         }
         if (town != null && !town.isEmpty()) {
@@ -71,5 +79,21 @@ public class ValidationController {
             return new ValidationResult(false, "Post Code cannot be Empty.");
         }
         return new ValidationResult(true);
+    }
+
+    public ValidationResult validateFileInput(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return new ValidationResult(false, "File name cannot be empty or consist solely of spaces.");
+        }
+        if (Pattern.compile(INVALID_CHARACTERS_REGEX).matcher(input).find()) {
+            return new ValidationResult(false, "File name contains invalid characters: \\ / : * ? \" < > |");
+        }
+        String inputUpperCase = input.toUpperCase().trim();
+        for (String reservedName : RESERVED_NAMES) {
+            if (inputUpperCase.equals(reservedName)) {
+                return new ValidationResult(false, "File name cannot be a reserved name such as " + reservedName);
+            }
+        }
+        return new ValidationResult(true, "File name is valid.");
     }
 }

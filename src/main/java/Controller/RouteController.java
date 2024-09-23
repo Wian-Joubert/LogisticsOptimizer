@@ -31,7 +31,7 @@ public class RouteController {
             leaveMatrix = leaveConstraints(objectiveMatrix);
             subTourMatrix = subTourConstraints(objectiveMatrix);  // Sub-tour matrix might be null
             selfLoopMatrix = selfLoopConstrains(objectiveMatrix);
-            
+
             // Equalize lengths
             int largerMatrixLength = Math.max(arriveMatrix[0].length,
                     Math.max(leaveMatrix[0].length,
@@ -56,7 +56,7 @@ public class RouteController {
             int[][] subjectToMatrix = concatenateMatrices(arriveMatrix, leaveMatrix, subTourMatrix, selfLoopMatrix);
 
             TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray, numLocations);
-            System.out.println(tsModel.toString());
+            System.out.println(tsModel);
 
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Calculation Error", JOptionPane.ERROR_MESSAGE);
@@ -119,8 +119,8 @@ public class RouteController {
      * The inner loop (j) iterates over all other locations except where i == j, ensuring constraints are only applied
      * between different locations (i and j).
      * For each valid (i, j) pair:
-     *  - A coefficient for the decision variable (x_ij) is set in the constraintsMatrix.
-     *  - Auxiliary variables U_i and U_j are used in the constraint, ensuring that no sub-tours form.
+     * - A coefficient for the decision variable (x_ij) is set in the constraintsMatrix.
+     * - Auxiliary variables U_i and U_j are used in the constraint, ensuring that no sub-tours form.
      * The constraints follow the rule: Ui - Uj + (number of locations) * x_ij ≤ (number of locations - 1).
      * This rule enforces that the distances in a potential sub-tour are kept within limits, eliminating the possibility
      * of visiting only a subset of locations without visiting every location.
@@ -345,7 +345,7 @@ public class RouteController {
         return flattenedArray;  // Return the flattened 1D array
     }
 
-    private double[] equalize1DArraySizes(double[] smallerMatrix, int largerMatrixLength){
+    private double[] equalize1DArraySizes(double[] smallerMatrix, int largerMatrixLength) {
         if (smallerMatrix.length >= largerMatrixLength) {
             return smallerMatrix;
         }

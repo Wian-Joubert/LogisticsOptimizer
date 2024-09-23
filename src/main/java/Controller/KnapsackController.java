@@ -45,6 +45,6 @@ public class KnapsackController {
         }
 
         KSModel ksModel = new KSModel(dp[n][(int) maxWeight], selectedProducts);
-        System.out.println(ksModel.toString());
+        System.out.println(ksModel);
     }
 }

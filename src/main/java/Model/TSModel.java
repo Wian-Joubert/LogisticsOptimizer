@@ -195,7 +195,7 @@ public class TSModel {
             }
         }
         // Print the resulting route
-        System.out.println("Route: " + route.toString() + " -> L1");
+        System.out.println("Route: " + route + " -> L1");
     }
 
     @Override
