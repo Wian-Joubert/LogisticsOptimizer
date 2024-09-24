@@ -558,7 +558,7 @@
                           <opaque value="false"/>
                         </properties>
                       </component>
-                      <component id="e039c" class="javax.swing.JButton" binding="inputGoogleAdress">
+                      <component id="e039c" class="javax.swing.JButton" binding="inputGoogleAddress">
                         <constraints border-constraint="East"/>
                         <properties>
                           <text value="Google Copy"/>

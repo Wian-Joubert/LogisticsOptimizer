@@ -6,6 +6,7 @@ import Model.Vehicle;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class KnapsackController {
     public void calculateKnapsack(ArrayList<Product> products, Vehicle vehicle) {
@@ -31,20 +32,21 @@ public class KnapsackController {
             }
         }
 
-        // Backtrack to find the products that were included
+        // Backtrack to find the products and their quantities that were included
         double maxValue = dp[n][(int) maxWeight];
-        ArrayList<Product> selectedProducts = new ArrayList<>();
+        HashMap<Product, Integer> productQuantities = new HashMap<>();
 
         for (int i = n, w = (int) maxWeight; i > 0 && maxValue > 0; i--) {
             if (maxValue != dp[i - 1][w]) {
                 Product product = products.get(i - 1);
-                selectedProducts.add(product);
+                productQuantities.put(product, productQuantities.getOrDefault(product, 0) + 1);
                 maxValue -= product.getValue();
-                w -= product.getWeight();
+                w -= (int) product.getWeight();
             }
         }
 
-        KSModel ksModel = new KSModel(dp[n][(int) maxWeight], selectedProducts);
+        // Create the KSModel with the total value and the product quantities
+        KSModel ksModel = new KSModel(dp[n][(int) maxWeight], productQuantities);
         System.out.println(ksModel);
     }
 }

@@ -130,8 +130,7 @@ public class FileController {
         return products;
     }
 
-    @NotNull
-    private static Product getProduct(String line) {
+    private Product getProduct(String line) {
         String[] parts = line.split(", ");
         String name = parts[0].substring(parts[0].indexOf('\'') + 1, parts[0].lastIndexOf('\''));
         String currency = parts[1].substring(parts[1].indexOf('\'') + 1, parts[1].lastIndexOf('\''));
@@ -158,8 +157,7 @@ public class FileController {
         return places;
     }
 
-    @NotNull
-    private static Place getPlace(String line) {
+    private Place getPlace(String line) {
         String[] parts = line.split(", ");
         String street = parts[0].substring(parts[0].indexOf('\'') + 1, parts[0].lastIndexOf('\''));
         String town = parts[1].substring(parts[1].indexOf('\'') + 1, parts[1].lastIndexOf('\''));
@@ -188,5 +186,41 @@ public class FileController {
         return vehicle;
     }
 
+    public void saveCosts(String currency, double hourlyRate, double fuelCost) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(currency);
+        builder.append(", ").append(hourlyRate);
+        builder.append(", ").append(fuelCost);
+        try (FileOutputStream fos = new FileOutputStream(resourcesPath + "defaultCosts.txt")) {
+            fos.write((builder + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+            logger.info("Costs File written successfully.");
+                JOptionPane.showMessageDialog(null, "Costs File saved successfully.");
+        } catch (Exception ex) {
+            logger.error("Error writing Costs File: {}", ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Costs File was not Saved.", "File Save Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public String[] loadCosts() {
+        String[] costs = new String[3];
+        try (BufferedReader reader = new BufferedReader(new FileReader(resourcesPath + "defaultCosts.txt"))) {
+            String line = reader.readLine();
+            if (line != null) {
+                String[] parts = line.split(",\\s*");
+                if (parts.length == 3) {
+                    costs[0] = parts[0]; // Currency
+                    costs[1] = parts[1]; // Hourly Rate
+                    costs[2] = parts[2]; // Fuel Cost
+                } else {
+                    logger.warn("Unexpected format in Costs File: {}", line);
+                }
+                logger.info("Costs read successfully.");
+            }
+        } catch (IOException ex) {
+            logger.error("Error reading Costs File: {}", ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Costs File could not be loaded.", "File Load Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return costs;
+    }
 
 }

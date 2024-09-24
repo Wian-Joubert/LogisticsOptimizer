@@ -72,11 +72,11 @@ public class DataEntry {
     private JButton btnSettings;
     private JComboBox vehStandardContainer;
     private JCheckBox vehCustomContainer;
-    private JButton inputGoogleAdress;
+    private JButton inputGoogleAddress;
 
-    private DefaultTableModel productModel;
-    private DefaultTableModel routeModel;
-    private StyledDocument vehicleDoc;
+    private static DefaultTableModel productModel;
+    private static DefaultTableModel routeModel;
+    private static StyledDocument vehicleDoc;
     private final Logger logger = LoggerFactory.getLogger(DataEntry.class);
     ValidationController vc = new ValidationController();
     FileController fileController = new FileController();
@@ -126,13 +126,21 @@ public class DataEntry {
                     vehCustomContainer.setSelected(true);
                     vehStandardContainer.setEnabled(false);
                 } else {
-                    StandardContainers container = StandardContainers.getContainerByName(selectedItem);
-                    if (container != null) {
-                        vehLength.setText(String.valueOf(container.getLength()));
-                        vehWidth.setText(String.valueOf(container.getWidth()));
-                        vehHeight.setText(String.valueOf(container.getHeight()));
-                        vehCustomContainer.setSelected(false);
-                        vehStandardContainer.setEnabled(true);
+                    try {
+                        StandardContainers container;
+                        if (selectedItem == null) {
+                            throw new RuntimeException("selectedItem is null.");
+                        }
+                        container = StandardContainers.getContainerByName(selectedItem);
+                        if (container != null) {
+                            vehLength.setText(String.valueOf(container.getLength()));
+                            vehWidth.setText(String.valueOf(container.getWidth()));
+                            vehHeight.setText(String.valueOf(container.getHeight()));
+                            vehCustomContainer.setSelected(false);
+                            vehStandardContainer.setEnabled(true);
+                        }
+                    } catch (RuntimeException ex) {
+                        logger.error("Container selector is null. Error: {}", ex.getMessage());
                     }
                 }
             }
@@ -151,7 +159,6 @@ public class DataEntry {
                 }
             }
         });
-
         prodTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -293,7 +300,7 @@ public class DataEntry {
                 settingsFrame.setVisible(true);
             }
         });
-        inputGoogleAdress.addActionListener(new ActionListener() {
+        inputGoogleAddress.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String streetAddress = "";
@@ -539,6 +546,19 @@ public class DataEntry {
         });
     }
 
+    private void initTables() {
+        //Init Tables
+        String[] prodColumns = {"Name", "Currency", "Value", "Weight", "Length", "Width", "Height", "Volume"};
+        productModel = new DefaultTableModel(prodColumns, 0);
+        prodTable.setModel(productModel);
+
+        String[] routeColumns = {"Street", "City", "Town", "Post Code"};
+        routeModel = new DefaultTableModel(routeColumns, 0);
+        routeTable.setModel(routeModel);
+
+        vehicleDoc = vehDetailsPane.getStyledDocument();
+    }
+
     private String searchFile(String type) {
         String projectDir = System.getProperty("user.dir");
         String resourcesPath = projectDir + "/src/main/resources/" + type + "/";
@@ -554,19 +574,6 @@ public class DataEntry {
             return fileToOpen.getName(); // Return file name with extension
         }
         return null; // Return null if no file was selected
-    }
-
-    private void initTables() {
-        //Init Tables
-        String[] prodColumns = {"Name", "Currency", "Value", "Weight", "Length", "Width", "Height", "Volume"};
-        productModel = new DefaultTableModel(prodColumns, 0);
-        prodTable.setModel(productModel);
-
-        String[] routeColumns = {"Street", "City", "Town", "Post Code"};
-        routeModel = new DefaultTableModel(routeColumns, 0);
-        routeTable.setModel(routeModel);
-
-        vehicleDoc = vehDetailsPane.getStyledDocument();
     }
 
     private void clearRoute() {

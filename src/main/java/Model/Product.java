@@ -18,7 +18,7 @@ public class Product {
         this.length = length;
         this.width = width;
         this.height = height;
-        this.volume = (length/100) * (width/100) * (height/100);
+        this.volume = Math.round(((length / 100.0) * (width / 100.0) * (height / 100.0)) * 1000.0) / 1000.0;
     }
 
     public String getName() {

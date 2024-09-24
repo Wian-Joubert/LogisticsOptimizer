@@ -55,7 +55,7 @@ public class RouteController {
             // Merge arrays, excluding subTourMatrix if it's null
             int[][] subjectToMatrix = concatenateMatrices(arriveMatrix, leaveMatrix, subTourMatrix, selfLoopMatrix);
 
-            TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray, numLocations);
+            TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray, numLocations, distanceMatrix);
             System.out.println(tsModel);
 
         } catch (RuntimeException ex) {

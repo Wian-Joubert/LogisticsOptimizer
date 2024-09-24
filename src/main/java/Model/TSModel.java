@@ -1,5 +1,7 @@
 package Model;
 
+import com.google.maps.model.DistanceMatrix;
+
 import java.util.Arrays;
 
 public class TSModel {
@@ -11,13 +13,16 @@ public class TSModel {
     private int[] optimalSolution;
     private double objectiveValue = 100000;
     private final int numLocations;
+    private final DistanceMatrix distanceMatrix;
+    private String route;
 
-    public TSModel(double[] objectiveFunction, int[][] subjectToMatrix, String[] signArray, int[] rhsArray, int numLocations) {
+    public TSModel(double[] objectiveFunction, int[][] subjectToMatrix, String[] signArray, int[] rhsArray, int numLocations, DistanceMatrix distanceMatrix) {
         this.objectiveFunction = objectiveFunction;
         this.subjectToMatrix = subjectToMatrix;
         this.signArray = signArray;
         this.rhsArray = rhsArray;
         this.numLocations = numLocations;
+        this.distanceMatrix = distanceMatrix;
         calculateOptimalRoute();
     }
 
@@ -43,6 +48,22 @@ public class TSModel {
 
     public double getObjectiveValue() {
         return objectiveValue;
+    }
+
+    public DistanceMatrix getDistanceMatrix(){
+        return distanceMatrix;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public int getNumLocations() {
+        return numLocations;
+    }
+
+    public int[] getDecisionArray() {
+        return decisionArray;
     }
 
     private void calculateOptimalRoute() {
@@ -196,6 +217,7 @@ public class TSModel {
         }
         // Print the resulting route
         System.out.println("Route: " + route + " -> L1");
+        this.route = route + " -> L1";
     }
 
     @Override
