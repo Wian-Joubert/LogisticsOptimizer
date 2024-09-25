@@ -1,9 +1,6 @@
 package View;
 
-import Controller.DistanceMatrixController;
-import Controller.FileController;
-import Controller.RouteController;
-import Controller.ValidationController;
+import Controller.*;
 import Model.*;
 
 import com.google.maps.model.DistanceMatrix;
@@ -18,7 +15,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class DataEntry {
+public class DataEntry extends JFrame{
     private JPanel rootPanel;
     private JPanel mainPanel;
     private JPanel mainLeftPanel;
@@ -81,7 +78,15 @@ public class DataEntry {
     ValidationController vc = new ValidationController();
     FileController fileController = new FileController();
 
+    private JFrame thisForm;
+
     public DataEntry() {
+        this.setTitle("Logistics Optimizer");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(1480, 740);
+        this.setContentPane(rootPanel);
+        this.setLocationRelativeTo(null);
+
         initTables();
 
         prodAdd.addActionListener(new ActionListener() {
@@ -286,11 +291,31 @@ public class DataEntry {
         calculateOptimalSolutionsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ArrayList<Product> products = getProducts();
+                Vehicle vehicle = getVehicle();
                 ArrayList<Place> places = getPlaces();
+
+                if (vehicle == null){
+                    throw new RuntimeException("Vehicle is null.");
+                }
+                KnapsackController knapsackController = new KnapsackController();
+                KSModel ksModel = knapsackController.calculateKnapsack(products, vehicle);
+
                 DistanceMatrixController distanceMatrixController = new DistanceMatrixController();
                 DistanceMatrix distanceMatrix = distanceMatrixController.distanceMatrixCall(places);
                 RouteController routeController = new RouteController();
-                routeController.calculateTraveling(distanceMatrix);
+                TSModel tsModel = routeController.calculateTraveling(distanceMatrix);
+
+                if (ksModel == null || tsModel == null){
+                    throw new RuntimeException("Data models are null.");
+                }
+                RevenueController revenueController = new RevenueController();
+                RevenueModel revenueModel = revenueController.calculateRevenue(ksModel, tsModel, vehicle);
+
+                DataView dataViewFrame = new DataView(tsModel, ksModel, revenueModel);
+                dataViewFrame.setThisForm(dataViewFrame);
+                dataViewFrame.setVisible(true);
+                thisForm.setVisible(false);
             }
         });
         btnSettings.addActionListener(new ActionListener() {
@@ -545,6 +570,9 @@ public class DataEntry {
             }
         });
     }
+    public void setThisForm(JFrame form){
+        this.thisForm = form;
+    }
 
     private void initTables() {
         //Init Tables
@@ -624,7 +652,7 @@ public class DataEntry {
     }
 
     private void addVehicleToPane(Vehicle vehicle) {
-        String[] vehicleDetails = {String.format("Fuel Consumption:\t %skm per Litre\n", vehicle.getFuelConsumption()), String.format("Max Weight:\t\t %skg\n", vehicle.getMaxWeight()), String.format("Container Length:\t %scm\n", vehicle.getConLength()), String.format("Container Width:\t %scm\n", vehicle.getConWidth()), String.format("Container Height:\t %scm\n", vehicle.getConHeight()), String.format("Container Volume:\t %sm^3\n", vehicle.getConVolume()),};
+        String[] vehicleDetails = {String.format("Fuel Consumption:\t %skm per Litre\n", vehicle.getFuelConsumption()), String.format("Max Weight:\t\t %skg\n", vehicle.getMaxWeight()), String.format("Container Length:\t %sm\n", vehicle.getConLength()), String.format("Container Width:\t %sm\n", vehicle.getConWidth()), String.format("Container Height:\t %sm\n", vehicle.getConHeight()), String.format("Container Volume:\t %sm^3\n", vehicle.getConVolume()),};
         try {
             vehicleDoc.remove(0, vehicleDoc.getLength());
             for (String detail : vehicleDetails) {

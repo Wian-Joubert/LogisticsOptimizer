@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.KSModel;
+import Model.RevenueModel;
 import Model.TSModel;
 import Model.Vehicle;
 import com.google.maps.model.DistanceMatrix;
@@ -16,7 +17,7 @@ public class RevenueController {
     private TSModel tsModel;
     FileController fileController = new FileController();
 
-    public void calculateRevenue(KSModel ksModel, TSModel tsModel, Vehicle vehicle, double hoursWorked) {
+    public RevenueModel calculateRevenue(KSModel ksModel, TSModel tsModel, Vehicle vehicle) {
         this.tsModel = tsModel;
         String[] defaultCosts = fileController.loadCosts();
         double fuelCostPerLiter = Double.parseDouble(defaultCosts[2]);
@@ -57,9 +58,11 @@ public class RevenueController {
             System.out.println("Total Shipping Cost: " + totalShippingCost);
             System.out.println("Profit: " + profit);
 
+            return new RevenueModel(totalValue, totalDistance, estimatedWorkHours, fuelConsumption, fuelUsed,  totalFuelCost, totalEmployeeCost, totalShippingCost, profit);
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Revenue Calculation Error", JOptionPane.ERROR_MESSAGE);
             logger.error("Revenue Calculation Error: {}", ex.getMessage());
+            return null;
         }
     }
 

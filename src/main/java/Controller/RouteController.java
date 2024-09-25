@@ -18,7 +18,7 @@ public class RouteController {
     int[][] selfLoopMatrix;
     int numLocations;
 
-    public void calculateTraveling(DistanceMatrix distanceMatrix) {
+    public TSModel calculateTraveling(DistanceMatrix distanceMatrix) {
         try {
             if (distanceMatrix == null) {
                 throw new RuntimeException("Distance Matrix is Null.");
@@ -57,10 +57,11 @@ public class RouteController {
 
             TSModel tsModel = new TSModel(flatObjective, subjectToMatrix, signsArray, rhsArray, numLocations, distanceMatrix);
             System.out.println(tsModel);
-
+            return tsModel;
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Calculation Error", JOptionPane.ERROR_MESSAGE);
             logger.error("Route Calculation Error: {}", ex.getMessage());
+            return null;
         }
     }
 

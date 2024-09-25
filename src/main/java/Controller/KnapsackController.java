@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KnapsackController {
-    public void calculateKnapsack(ArrayList<Product> products, Vehicle vehicle) {
+    public KSModel calculateKnapsack(ArrayList<Product> products, Vehicle vehicle) {
         int n = products.size();
         double maxWeight = vehicle.getMaxWeight();
         BigDecimal maxVolume = vehicle.getConVolume();
@@ -48,5 +48,6 @@ public class KnapsackController {
         // Create the KSModel with the total value and the product quantities
         KSModel ksModel = new KSModel(dp[n][(int) maxWeight], productQuantities);
         System.out.println(ksModel);
+        return ksModel;
     }
 }

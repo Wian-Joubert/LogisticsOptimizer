@@ -1,3 +1,4 @@
+import View.DataEntry;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 import javax.swing.*;
@@ -10,13 +11,8 @@ public class Main {
             ex.printStackTrace();
         }
 
-        JFrame frame = new JFrame("Logistics Optimizer");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        View.DataEntry dataEntry = new View.DataEntry();
-        frame.setContentPane(dataEntry.getRootPanel());
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        DataEntry dataEntryForm = new DataEntry();
+        dataEntryForm.setThisForm(dataEntryForm);
+        dataEntryForm.setVisible(true);
     }
 }
