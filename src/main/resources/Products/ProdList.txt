@@ -1,4 +1,0 @@
-Product{name='alkjad', currency='R (ZAR)', value=2728.0, weight=93.0, length=339.0, width=929.0, height=91.0, volume=28.658721}
-Product{name='cvjks', currency='R (ZAR)', value=89.0, weight=12.0, length=278.0, width=18.0, height=81.0, volume=0.405324}
-Product{name='nvlk', currency='R (ZAR)', value=82.0, weight=9.0, length=92.0, width=81.0, height=92.0, volume=0.6855840000000001}
-Product{name='sdfsd', currency='R (ZAR)', value=12.0, weight=21.0, length=212.0, width=21.0, height=21.0, volume=0.09349199999999999}
