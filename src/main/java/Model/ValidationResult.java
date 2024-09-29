@@ -7,16 +7,17 @@ public class ValidationResult {
     public ValidationResult(boolean isValid) {
         this.isValid = isValid;
     }
+
     public ValidationResult(boolean isValid, String message) {
         this.isValid = isValid;
         this.message = message;
     }
 
-    public boolean isValid(){
-        return isValid;
+    public boolean isValid() {
+        return !isValid;
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 }

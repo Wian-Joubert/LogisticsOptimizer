@@ -8,7 +8,10 @@ public class Main {
         try {
             UIManager.setLookAndFeel(new FlatMacDarkLaf());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Program start error: " + ex.getMessage(),
+                    "Start Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         DataEntry dataEntryForm = new DataEntry();

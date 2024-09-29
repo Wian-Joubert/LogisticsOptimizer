@@ -336,10 +336,10 @@ public class RouteController {
         int index = 0;
 
         // Loop through each row and column of the 2D array
-        for (int i = 0; i < numRows; i++) {
+        for (double[] doubles : matrix) {
             for (int j = 0; j < numCols; j++) {
                 // Copy each element from the 2D array into the 1D array
-                flattenedArray[index++] = matrix[i][j];
+                flattenedArray[index++] = doubles[j];
             }
         }
 

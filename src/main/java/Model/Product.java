@@ -10,7 +10,7 @@ public class Product {
     private final double height;
     private final double volume;
 
-    public Product(String name, String currency, double value, double weight, double length, double width, double height){
+    public Product(String name, String currency, double value, double weight, double length, double width, double height) {
         this.name = name;
         this.currency = currency;
         this.value = value;
@@ -24,24 +24,31 @@ public class Product {
     public String getName() {
         return name;
     }
+
     public String getCurrency() {
         return currency;
     }
+
     public double getValue() {
         return value;
     }
+
     public double getWeight() {
         return weight;
     }
+
     public double getLength() {
         return length;
     }
+
     public double getWidth() {
         return width;
     }
+
     public double getHeight() {
         return height;
     }
+
     public double getVolume() {
         return volume;
     }

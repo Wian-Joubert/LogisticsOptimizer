@@ -15,7 +15,7 @@ import javax.swing.*;
 public class RevenueController {
     private final Logger logger = LoggerFactory.getLogger(RevenueController.class);
     private TSModel tsModel;
-    FileController fileController = new FileController();
+    final FileController fileController = new FileController();
 
     public RevenueModel calculateRevenue(KSModel ksModel, TSModel tsModel, Vehicle vehicle) {
         this.tsModel = tsModel;
@@ -58,7 +58,7 @@ public class RevenueController {
             System.out.println("Total Shipping Cost: " + totalShippingCost);
             System.out.println("Profit: " + profit);
 
-            return new RevenueModel(totalValue, totalDistance, estimatedWorkHours, fuelConsumption, fuelUsed,  totalFuelCost, totalEmployeeCost, totalShippingCost, profit);
+            return new RevenueModel(totalValue, totalDistance, estimatedWorkHours, fuelConsumption, fuelUsed, totalFuelCost, totalEmployeeCost, totalShippingCost, profit);
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Revenue Calculation Error", JOptionPane.ERROR_MESSAGE);
             logger.error("Revenue Calculation Error: {}", ex.getMessage());
@@ -123,5 +123,4 @@ public class RevenueController {
             throw new RuntimeException("Error extracting duration from Distance Matrix Element: " + ex.getMessage(), ex);
         }
     }
-
 }

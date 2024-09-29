@@ -19,7 +19,7 @@ public class Settings extends JFrame {
     private JTextField hourlyCost;
     private JTextField avgFuelCost;
 
-    FileController fileController = new FileController();
+    final FileController fileController = new FileController();
 
     public Settings() {
         this.setTitle("Settings");
@@ -28,47 +28,41 @@ public class Settings extends JFrame {
         this.setContentPane(panel1);
         this.setLocationRelativeTo(null);
 
-        if (!loadCosts() || !loadApiKey()){
+        if (!loadCosts() || !loadApiKey()) {
             JOptionPane.showMessageDialog(null, "API Key or Default Costs are missing.\nPlease enter values before continuing.", "Load Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        saveKey.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String api_key;
-                api_key = Arrays.toString(apiKeyField.getPassword());
-                fileController.writeApiKey(api_key);
-            }
+        saveKey.addActionListener(e -> {
+            String api_key;
+            api_key = Arrays.toString(apiKeyField.getPassword());
+            fileController.writeApiKey(api_key);
         });
-        saveCostsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String currency;
-                double hourlyRate = 0;
-                double fuelCost = 0;
+        saveCostsButton.addActionListener(e -> {
+            String currency;
+            double hourlyRate = 0;
+            double fuelCost = 0;
 
-                if (currencyCombo.getSelectedIndex() == -1){
-                    JOptionPane.showMessageDialog(null, "There is no currency selected.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
+            if (currencyCombo.getSelectedIndex() == -1) {
+                JOptionPane.showMessageDialog(null, "There is no currency selected.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            currency = (String) currencyCombo.getSelectedItem();
+            try {
+                if (hourlyCost.getText().isBlank()) {
+                    JOptionPane.showMessageDialog(null, "There is no value in Hourly Rate.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                currency = (String) currencyCombo.getSelectedItem();
-                try {
-                    if (hourlyCost.getText().isBlank()){
-                        JOptionPane.showMessageDialog(null, "There is no value in Hourly Rate.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    hourlyRate = Double.parseDouble(hourlyCost.getText().trim());
-                    if (avgFuelCost.getText().isBlank()){
-                        JOptionPane.showMessageDialog(null, "There is no value in Fuel Cost.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    fuelCost = Double.parseDouble(avgFuelCost.getText().trim());
-                } catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(null, "Invalid Input for Cost Values.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
-                    hourlyCost.requestFocus();
+                hourlyRate = Double.parseDouble(hourlyCost.getText().trim());
+                if (avgFuelCost.getText().isBlank()) {
+                    JOptionPane.showMessageDialog(null, "There is no value in Fuel Cost.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-                fileController.saveCosts(currency, hourlyRate, fuelCost);
+                fuelCost = Double.parseDouble(avgFuelCost.getText().trim());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Invalid Input for Cost Values.", "Cost Save Error", JOptionPane.ERROR_MESSAGE);
+                hourlyCost.requestFocus();
             }
+            fileController.saveCosts(currency, hourlyRate, fuelCost);
         });
     }
 

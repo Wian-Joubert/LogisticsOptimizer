@@ -11,11 +11,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class DataEntry extends JFrame{
+public class DataEntry extends JFrame {
     private JPanel rootPanel;
     private JPanel mainPanel;
     private JPanel mainLeftPanel;
@@ -65,18 +66,18 @@ public class DataEntry extends JFrame{
     private JButton calculateOptimalSolutionsButton;
     private JButton saveAll;
     private JButton loadAll;
-    private JButton openFile;
     private JButton btnSettings;
     private JComboBox vehStandardContainer;
     private JCheckBox vehCustomContainer;
     private JButton inputGoogleAddress;
+    private JFrame progressFrame;
 
     private static DefaultTableModel productModel;
     private static DefaultTableModel routeModel;
     private static StyledDocument vehicleDoc;
     private final Logger logger = LoggerFactory.getLogger(DataEntry.class);
-    ValidationController vc = new ValidationController();
-    FileController fileController = new FileController();
+    final ValidationController vc = new ValidationController();
+    final FileController fileController = new FileController();
 
     private JFrame thisForm;
 
@@ -89,79 +90,64 @@ public class DataEntry extends JFrame{
 
         initTables();
 
-        prodAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Product product = makeProduct();
-                if (product != null) {
-                    addProductToTable(product);
-                    clearProduct();
-                }
-                prodName.requestFocus();
+        prodAdd.addActionListener(e -> {
+            Product product = makeProduct();
+            if (product != null) {
+                addProductToTable(product);
+                clearProduct();
+            }
+            prodName.requestFocus();
+        });
+        vehAdd.addActionListener(e -> {
+            Vehicle vehicle = makeVehicle();
+            if (vehicle != null) {
+                addVehicleToPane(vehicle);
             }
         });
-        vehAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Vehicle vehicle = makeVehicle();
-                if (vehicle != null) {
-                    addVehicleToPane(vehicle);
-                }
+        roAdd.addActionListener(e -> {
+            Place place = makePlace();
+            if (place != null) {
+                addRouteToTable(place);
+                clearRoute();
             }
+            roStreet.requestFocus();
         });
-        roAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Place place = makePlace();
-                if (place != null) {
-                    addRouteToTable(place);
-                    clearRoute();
-                }
-                roStreet.requestFocus();
-            }
-        });
-        vehStandardContainer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedItem = (String) vehStandardContainer.getSelectedItem();
-                if ("Custom".equals(selectedItem)) {
-                    vehLength.setText("");
-                    vehWidth.setText("");
-                    vehHeight.setText("");
-                    vehCustomContainer.setSelected(true);
-                    vehStandardContainer.setEnabled(false);
-                } else {
-                    try {
-                        StandardContainers container;
-                        if (selectedItem == null) {
-                            throw new RuntimeException("selectedItem is null.");
-                        }
-                        container = StandardContainers.getContainerByName(selectedItem);
-                        if (container != null) {
-                            vehLength.setText(String.valueOf(container.getLength()));
-                            vehWidth.setText(String.valueOf(container.getWidth()));
-                            vehHeight.setText(String.valueOf(container.getHeight()));
-                            vehCustomContainer.setSelected(false);
-                            vehStandardContainer.setEnabled(true);
-                        }
-                    } catch (RuntimeException ex) {
-                        logger.error("Container selector is null. Error: {}", ex.getMessage());
+        vehStandardContainer.addActionListener(e -> {
+            String selectedItem = (String) vehStandardContainer.getSelectedItem();
+            if ("Custom".equals(selectedItem)) {
+                vehLength.setText("");
+                vehWidth.setText("");
+                vehHeight.setText("");
+                vehCustomContainer.setSelected(true);
+                vehStandardContainer.setEnabled(false);
+            } else {
+                try {
+                    StandardContainers container;
+                    if (selectedItem == null) {
+                        throw new RuntimeException("selectedItem is null.");
                     }
+                    container = StandardContainers.getContainerByName(selectedItem);
+                    if (container != null) {
+                        vehLength.setText(String.valueOf(container.getLength()));
+                        vehWidth.setText(String.valueOf(container.getWidth()));
+                        vehHeight.setText(String.valueOf(container.getHeight()));
+                        vehCustomContainer.setSelected(false);
+                        vehStandardContainer.setEnabled(true);
+                    }
+                } catch (RuntimeException ex) {
+                    logger.error("Container selector is null. Error: {}", ex.getMessage());
                 }
             }
         });
-        vehCustomContainer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (vehCustomContainer.isSelected()) {
-                    vehStandardContainer.setSelectedIndex(vehStandardContainer.getItemCount() - 1);
-                    vehLength.setText("");
-                    vehWidth.setText("");
-                    vehHeight.setText("");
-                    vehStandardContainer.setEnabled(false);
-                } else {
-                    vehStandardContainer.setEnabled(true);
-                }
+        vehCustomContainer.addActionListener(e -> {
+            if (vehCustomContainer.isSelected()) {
+                vehStandardContainer.setSelectedIndex(vehStandardContainer.getItemCount() - 1);
+                vehLength.setText("");
+                vehWidth.setText("");
+                vehHeight.setText("");
+                vehStandardContainer.setEnabled(false);
+            } else {
+                vehStandardContainer.setEnabled(true);
             }
         });
         prodTable.addMouseListener(new MouseAdapter() {
@@ -195,382 +181,349 @@ public class DataEntry extends JFrame{
                 super.mouseClicked(e);
             }
         });
-        prodEdit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = prodTable.getSelectedRow();
-                try {
-                    if (selectedRow == -1) {
-                        throw new RuntimeException("Select a row before Updating.");
-                    }
-                    String[] rowValues = {prodName.getText().trim(), (String) currencyCombo.getSelectedItem(), prodValue.getText().trim(), prodWeight.getText().trim(), prodLength.getText().trim(), prodWidth.getText().trim(), prodHeight.getText().trim()};
-                    ValidationResult result = vc.validateProduct(rowValues[0], rowValues[1], Double.parseDouble(rowValues[2]), Double.parseDouble(rowValues[3]), Double.parseDouble(rowValues[4]), Double.parseDouble(rowValues[5]), Double.parseDouble(rowValues[6]));
-                    if (!result.isValid()) {
-                        throw new RuntimeException(result.getMessage());
-                    }
-                    for (int i = 0; i < rowValues.length; i++) {
-                        prodTable.setValueAt(rowValues[i], selectedRow, i);
-                    }
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Product Update Error", JOptionPane.ERROR_MESSAGE);
-                    logger.error("Failed to Update Product: {}", ex.getMessage());
+        prodEdit.addActionListener(e -> {
+            int selectedRow = prodTable.getSelectedRow();
+            try {
+                if (selectedRow == -1) {
+                    throw new RuntimeException("Select a row before Updating.");
                 }
+                String[] rowValues = {prodName.getText().trim(), (String) currencyCombo.getSelectedItem(), prodValue.getText().trim(), prodWeight.getText().trim(), prodLength.getText().trim(), prodWidth.getText().trim(), prodHeight.getText().trim()};
+                ValidationResult result = vc.validateProduct(rowValues[0], rowValues[1], Double.parseDouble(rowValues[2]), Double.parseDouble(rowValues[3]), Double.parseDouble(rowValues[4]), Double.parseDouble(rowValues[5]), Double.parseDouble(rowValues[6]));
+                if (result.isValid()) {
+                    throw new RuntimeException(result.getMessage());
+                }
+                for (int i = 0; i < rowValues.length; i++) {
+                    prodTable.setValueAt(rowValues[i], selectedRow, i);
+                }
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Product Update Error", JOptionPane.ERROR_MESSAGE);
+                logger.error("Failed to Update Product: {}", ex.getMessage());
             }
         });
-        roEdit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = routeTable.getSelectedRow();
-                try {
-                    if (selectedRow == -1) {
-                        throw new RuntimeException("Select a row before Updating.");
-                    }
-                    String[] rowValues = {roStreet.getText().trim(), roTown.getText().trim(), roCity.getText().trim(), roPostCode.getText().trim(),};
-                    ValidationResult result = vc.validatePlace(rowValues[0], rowValues[1], rowValues[2], rowValues[3]);
+        roEdit.addActionListener(e -> {
+            int selectedRow = routeTable.getSelectedRow();
+            try {
+                if (selectedRow == -1) {
+                    throw new RuntimeException("Select a row before Updating.");
+                }
+                String[] rowValues = {roStreet.getText().trim(), roTown.getText().trim(), roCity.getText().trim(), roPostCode.getText().trim(),};
+                ValidationResult result = vc.validatePlace(rowValues[0], rowValues[1], rowValues[2], rowValues[3]);
 
-                    if (!result.isValid()) {
-                        throw new RuntimeException(result.getMessage());
-                    }
-                    for (int i = 0; i < rowValues.length; i++) {
-                        routeModel.setValueAt(rowValues[i], selectedRow, i);
-                    }
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Update Error", JOptionPane.ERROR_MESSAGE);
-                    logger.error("Failed to Update Route: {}", ex.getMessage());
+                if (result.isValid()) {
+                    throw new RuntimeException(result.getMessage());
+                }
+                for (int i = 0; i < rowValues.length; i++) {
+                    routeModel.setValueAt(rowValues[i], selectedRow, i);
+                }
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Update Error", JOptionPane.ERROR_MESSAGE);
+                logger.error("Failed to Update Route: {}", ex.getMessage());
+            }
+        });
+        prodReset.addActionListener(e -> clearProduct());
+        vehReset.addActionListener(e -> clearVehicle());
+        roReset.addActionListener(e -> clearRoute());
+        prodDelete.addActionListener(e -> {
+            int selectedRow = prodTable.getSelectedRow();
+            try {
+                if (selectedRow == -1) {
+                    throw new RuntimeException("Select a row before Deleting.");
+                }
+                productModel.removeRow(selectedRow);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Product Delete Error", JOptionPane.ERROR_MESSAGE);
+                logger.error("Failed to Delete Product: {}", ex.getMessage());
+            }
+        });
+        roDelete.addActionListener(e -> {
+            int selectedRow = routeTable.getSelectedRow();
+            try {
+                if (selectedRow == -1) {
+                    throw new RuntimeException("Select a row before Deleting.");
+                }
+                routeModel.removeRow(selectedRow);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Delete Error", JOptionPane.ERROR_MESSAGE);
+                logger.error("Failed to Delete Route: {}", ex.getMessage());
+            }
+        });
+        calculateOptimalSolutionsButton.addActionListener(e -> makeCalculations());
+        btnSettings.addActionListener(e -> {
+            Settings settingsFrame = new Settings();
+            settingsFrame.setVisible(true);
+        });
+        inputGoogleAddress.addActionListener(e -> {
+            String streetAddress = "";
+            String town = "";
+            String city = "";
+            String postCode = "";
+
+            while (true) {
+                String input = JOptionPane.showInputDialog(null,
+                        "Input Google copied address:\n\nStreet Address, Town, City, Post Code",
+                        "Address Input",
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (input == null) {
+                    return; // Exit if the user cancels
+                }
+
+                input = input.trim();
+
+                if (input.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "Address cannot be blank. Please try again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue; // Prompt for valid input
+                }
+
+                String[] parts = input.split(",");
+
+                if (parts.length == 4) {
+                    streetAddress = parts[0].trim();
+                    town = parts[1].trim();
+                    city = parts[2].trim();
+                    postCode = parts[3].trim();
+                    break; // Valid input, exit loop
+
+                } else if (parts.length == 5) {
+                    streetAddress = parts[0].trim();
+                    town = parts[2].trim();
+                    city = parts[3].trim();
+                    postCode = parts[4].trim();
+                    break; // Valid input, exit loop
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid address format. Please enter the correct address format.", "Route Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+
+            // Set the text fields only after valid input
+            roStreet.setText(streetAddress);
+            roTown.setText(town);
+            roCity.setText(city);
+            roPostCode.setText(postCode);
         });
-        prodReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearProduct();
-            }
-        });
-        vehReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearVehicle();
-            }
-        });
-        roReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearRoute();
-            }
-        });
-        prodDelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = prodTable.getSelectedRow();
-                try {
-                    if (selectedRow == -1) {
-                        throw new RuntimeException("Select a row before Deleting.");
-                    }
-                    productModel.removeRow(selectedRow);
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Product Delete Error", JOptionPane.ERROR_MESSAGE);
-                    logger.error("Failed to Delete Product: {}", ex.getMessage());
+        saveProductList.addActionListener(e -> {
+            while (true) {
+                String input = JOptionPane.showInputDialog(null,
+                        "Input Product List name:\n",
+                        "Save Product List",
+                        JOptionPane.QUESTION_MESSAGE);
+                if (input == null) {
+                    return;
                 }
-            }
-        });
-        roDelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = routeTable.getSelectedRow();
-                try {
-                    if (selectedRow == -1) {
-                        throw new RuntimeException("Select a row before Deleting.");
-                    }
-                    routeModel.removeRow(selectedRow);
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Route Delete Error", JOptionPane.ERROR_MESSAGE);
-                    logger.error("Failed to Delete Route: {}", ex.getMessage());
+                input = input.trim();
+                if (input.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
                 }
+                ValidationResult result = vc.validateFileInput(input);
+                if (result.isValid()) {
+                    JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                ArrayList<Product> products = getProducts();
+                fileController.saveProductList(products, input, true);
+                break;
             }
         });
-        calculateOptimalSolutionsButton.addActionListener(new ActionListener() {
+        saveRouteList.addActionListener(e -> {
+            while (true) {
+                String input = JOptionPane.showInputDialog(null,
+                        "Input Route List name:\n",
+                        "Save Route List",
+                        JOptionPane.QUESTION_MESSAGE);
+                if (input == null) {
+                    return;
+                }
+                input = input.trim();
+                if (input.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                ValidationResult result = vc.validateFileInput(input);
+                if (result.isValid()) {
+                    JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                ArrayList<Place> places = getPlaces();
+                fileController.saveRouteList(places, input, true);
+                break;
+            }
+        });
+        saveVehicle.addActionListener(e -> {
+            while (true) {
+                String input = JOptionPane.showInputDialog(null,
+                        "Input Vehicle name:\n",
+                        "Save Vehicle",
+                        JOptionPane.QUESTION_MESSAGE);
+                if (input == null) {
+                    return;
+                }
+                input = input.trim();
+                if (input.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                ValidationResult result = vc.validateFileInput(input);
+                if (result.isValid()) {
+                    JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                Vehicle vehicle = getVehicle();
+                fileController.saveVehicle(vehicle, input, true);
+                break;
+            }
+        });
+        loadProductList.addActionListener(e -> {
+            String file = searchFile("Products");
+            if (file == null) {
+                return;
+            }
+            ArrayList<Product> products = fileController.loadProductList(file);
+            for (Product product : products) {
+                addProductToTable(product);
+            }
+            JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
+        });
+        loadRouteList.addActionListener(e -> {
+            String file = searchFile("Routes");
+            if (file == null) {
+                return;
+            }
+            ArrayList<Place> places = fileController.loadRouteList(file);
+            for (Place place : places) {
+                addRouteToTable(place);
+            }
+            JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
+        });
+        loadVehicle.addActionListener(e -> {
+            String file = searchFile("Vehicles");
+            if (file == null) {
+                return;
+            }
+            Vehicle vehicle = fileController.loadVehicle(file);
+            addVehicleToPane(vehicle);
+            JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
+        });
+        saveAll.addActionListener(e -> {
+            String[] fileNames = new String[3];
+            String[] type = {"Product List", "Route List", "Vehicle"};
+            for (int i = 0; i < 3; ) {
+                String input = JOptionPane.showInputDialog(null,
+                        String.format("Input %s name:\n", type[i]),
+                        String.format("Save %s", type[i]),
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (input == null) {
+                    return; // User cancelled
+                }
+
+                String trimmedInput = input.trim();
+
+                if (trimmedInput.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue; // Ask for the same input again
+                }
+
+                ValidationResult result = vc.validateFileInput(trimmedInput);
+                if (result.isValid()) {
+                    JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
+                    continue; // Ask for the same input again
+                }
+
+                fileNames[i] = trimmedInput; // Save valid input
+                i++; // Move to the next input
+            }
+            ArrayList<Product> products = getProducts();
+            fileController.saveProductList(products, fileNames[0], false);
+            ArrayList<Place> places = getPlaces();
+            fileController.saveRouteList(places, fileNames[1], false);
+            Vehicle vehicle = getVehicle();
+            fileController.saveVehicle(vehicle, fileNames[2], false);
+            JOptionPane.showMessageDialog(null, "Files saved successfully.");
+        });
+        loadAll.addActionListener(e -> {
+            String[] fileNames = new String[3];
+            String[] type = {"Products", "Routes", "Vehicles"};
+            for (int i = 0; i < 3; ) {
+                String file = searchFile(type[i]);
+                if (file == null) {
+                    return;
+                }
+                fileNames[i] = file;
+                i++;
+            }
+            try {
+                ArrayList<Product> products = fileController.loadProductList(fileNames[0]);
+                for (Product product : products) {
+                    addProductToTable(product);
+                }
+                ArrayList<Place> places = fileController.loadRouteList(fileNames[1]);
+                for (Place place : places) {
+                    addRouteToTable(place);
+                }
+                Vehicle vehicle = fileController.loadVehicle(fileNames[2]);
+                addVehicleToPane(vehicle);
+                JOptionPane.showMessageDialog(null, "Files Loaded Successfully.");
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    private void makeCalculations() {
+        showProgressPanel(true); // Show the progress panel
+
+        // Create a SwingWorker for background calculations
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            protected Void doInBackground() {
+                // Perform calculations here
                 ArrayList<Product> products = getProducts();
                 Vehicle vehicle = getVehicle();
                 ArrayList<Place> places = getPlaces();
 
-                if (vehicle == null){
+                if (vehicle == null) {
                     throw new RuntimeException("Vehicle is null.");
                 }
+
                 KnapsackController knapsackController = new KnapsackController();
                 KSModel ksModel = knapsackController.calculateKnapsack(products, vehicle);
 
                 DistanceMatrixController distanceMatrixController = new DistanceMatrixController();
                 DistanceMatrix distanceMatrix = distanceMatrixController.distanceMatrixCall(places);
+
                 RouteController routeController = new RouteController();
                 TSModel tsModel = routeController.calculateTraveling(distanceMatrix);
 
-                if (ksModel == null || tsModel == null){
+                if (ksModel == null || tsModel == null) {
                     throw new RuntimeException("Data models are null.");
                 }
+
                 RevenueController revenueController = new RevenueController();
                 RevenueModel revenueModel = revenueController.calculateRevenue(ksModel, tsModel, vehicle);
 
+                // Update the DataView in the process
                 DataView dataViewFrame = new DataView(tsModel, ksModel, revenueModel);
                 dataViewFrame.setThisForm(dataViewFrame);
                 dataViewFrame.setVisible(true);
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                // Hide the progress panel when done
+                showProgressPanel(false);
                 thisForm.setVisible(false);
             }
-        });
-        btnSettings.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Settings settingsFrame = new Settings();
-                settingsFrame.setVisible(true);
-            }
-        });
-        inputGoogleAddress.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String streetAddress = "";
-                String town = "";
-                String city = "";
-                String postCode = "";
+        };
 
-                while (true) {
-                    String input = JOptionPane.showInputDialog(null,
-                            "Input Google copied address:\n\nStreet Address, Town, City, Post Code",
-                            "Address Input",
-                            JOptionPane.QUESTION_MESSAGE);
-
-                    if (input == null) {
-                        return; // Exit if the user cancels
-                    }
-
-                    input = input.trim();
-
-                    if (input.isBlank()) {
-                        JOptionPane.showMessageDialog(null, "Address cannot be blank. Please try again.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        continue; // Prompt for valid input
-                    }
-
-                    String[] parts = input.split(",");
-
-                    if (parts.length == 4) {
-                        streetAddress = parts[0].trim();
-                        town = parts[1].trim();
-                        city = parts[2].trim();
-                        postCode = parts[3].trim();
-                        break; // Valid input, exit loop
-
-                    } else if (parts.length == 5) {
-                        streetAddress = parts[0].trim();
-                        town = parts[2].trim();
-                        city = parts[3].trim();
-                        postCode = parts[4].trim();
-                        break; // Valid input, exit loop
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Invalid address format. Please enter the correct address format.", "Route Input Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-
-                // Set the text fields only after valid input
-                roStreet.setText(streetAddress);
-                roTown.setText(town);
-                roCity.setText(city);
-                roPostCode.setText(postCode);
-            }
-        });
-        saveProductList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                while (true) {
-                    String input = JOptionPane.showInputDialog(null,
-                            "Input Product List name:\n",
-                            "Save Product List",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (input == null) {
-                        return;
-                    }
-                    input = input.trim();
-                    if (input.isBlank()) {
-                        JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    ValidationResult result = vc.validateFileInput(input);
-                    if (!result.isValid()) {
-                        JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    ArrayList<Product> products = getProducts();
-                    fileController.saveProductList(products, input, true);
-                    break;
-                }
-            }
-        });
-        saveRouteList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                while (true) {
-                    String input = JOptionPane.showInputDialog(null,
-                            "Input Route List name:\n",
-                            "Save Route List",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (input == null) {
-                        return;
-                    }
-                    input = input.trim();
-                    if (input.isBlank()) {
-                        JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    ValidationResult result = vc.validateFileInput(input);
-                    if (!result.isValid()) {
-                        JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    ArrayList<Place> places = getPlaces();
-                    fileController.saveRouteList(places, input, true);
-                    break;
-                }
-            }
-        });
-        saveVehicle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                while (true) {
-                    String input = JOptionPane.showInputDialog(null,
-                            "Input Vehicle name:\n",
-                            "Save Vehicle",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (input == null) {
-                        return;
-                    }
-                    input = input.trim();
-                    if (input.isBlank()) {
-                        JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    ValidationResult result = vc.validateFileInput(input);
-                    if (!result.isValid()) {
-                        JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
-                        continue;
-                    }
-                    Vehicle vehicle = getVehicle();
-                    fileController.saveVehicle(vehicle, input, true);
-                    break;
-                }
-            }
-        });
-        loadProductList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String file = searchFile("Products");
-                if (file == null) {
-                    return;
-                }
-                ArrayList<Product> products = fileController.loadProductList(file);
-                for (Product product : products) {
-                    addProductToTable(product);
-                }
-                JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
-            }
-        });
-        loadRouteList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String file = searchFile("Routes");
-                if (file == null) {
-                    return;
-                }
-                ArrayList<Place> places = fileController.loadRouteList(file);
-                for (Place place : places) {
-                    addRouteToTable(place);
-                }
-                JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
-            }
-        });
-        loadVehicle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String file = searchFile("Vehicles");
-                if (file == null) {
-                    return;
-                }
-                Vehicle vehicle = fileController.loadVehicle(file);
-                addVehicleToPane(vehicle);
-                JOptionPane.showMessageDialog(null, "File Loaded Successfully.");
-            }
-        });
-        saveAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String[] fileNames = new String[3];
-                String[] type = {"Product List", "Route List", "Vehicle"};
-                for (int i = 0; i < 3; ) {
-                    String input = JOptionPane.showInputDialog(null,
-                            String.format("Input %s name:\n", type[i]),
-                            String.format("Save %s", type[i]),
-                            JOptionPane.QUESTION_MESSAGE);
-
-                    if (input == null) {
-                        return; // User cancelled
-                    }
-
-                    String trimmedInput = input.trim();
-
-                    if (trimmedInput.isBlank()) {
-                        JOptionPane.showMessageDialog(null, "File name cannot be blank. Try Again.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                        continue; // Ask for the same input again
-                    }
-
-                    ValidationResult result = vc.validateFileInput(trimmedInput);
-                    if (!result.isValid()) {
-                        JOptionPane.showMessageDialog(null, "Invalid Windows file name. Try Again.", "File Name Error", JOptionPane.ERROR_MESSAGE);
-                        continue; // Ask for the same input again
-                    }
-
-                    fileNames[i] = trimmedInput; // Save valid input
-                    i++; // Move to the next input
-                }
-                ArrayList<Product> products = getProducts();
-                fileController.saveProductList(products, fileNames[0], false);
-                ArrayList<Place> places = getPlaces();
-                fileController.saveRouteList(places, fileNames[1], false);
-                Vehicle vehicle = getVehicle();
-                fileController.saveVehicle(vehicle, fileNames[2], false);
-                JOptionPane.showMessageDialog(null, "Files saved successfully.");
-            }
-        });
-        loadAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String[] fileNames = new String[3];
-                String[] type = {"Products", "Routes", "Vehicles"};
-                for (int i = 0; i < 3; ) {
-                    String file = searchFile(type[i]);
-                    if (file == null) {
-                        return;
-                    }
-                    fileNames[i] = file;
-                    i++;
-                }
-                try {
-                    ArrayList<Product> products = fileController.loadProductList(fileNames[0]);
-                    for (Product product : products) {
-                        addProductToTable(product);
-                    }
-                    ArrayList<Place> places = fileController.loadRouteList(fileNames[1]);
-                    for (Place place : places) {
-                        addRouteToTable(place);
-                    }
-                    Vehicle vehicle = fileController.loadVehicle(fileNames[2]);
-                    addVehicleToPane(vehicle);
-                    JOptionPane.showMessageDialog(null, "Files Loaded Successfully.");
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        // Execute the worker
+        worker.execute();
     }
-    public void setThisForm(JFrame form){
+
+    public void setThisForm(JFrame form) {
         this.thisForm = form;
     }
 
@@ -585,6 +538,35 @@ public class DataEntry extends JFrame{
         routeTable.setModel(routeModel);
 
         vehicleDoc = vehDetailsPane.getStyledDocument();
+    }
+
+    private void showProgressPanel(boolean visible) {
+        JPanel progressPanel = new JPanel();
+        progressPanel.setPreferredSize(new Dimension(300, 150));
+        progressPanel.setLayout(new GridBagLayout());
+        JLabel progressLabel = new JLabel("Calculations in progress...");
+        Font defaultFont = progressLabel.getFont();
+        Font boldFont = new Font(defaultFont.getName(), Font.BOLD, 20);
+        progressLabel.setFont(boldFont);
+        progressLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        progressPanel.setBorder(BorderFactory.createEtchedBorder());
+        progressPanel.add(progressLabel);
+
+        if (visible) {
+            if (progressFrame == null) {
+                progressFrame = new JFrame("Progress");
+                progressFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                progressFrame.setUndecorated(true);
+                progressFrame.add(progressPanel);
+                progressFrame.pack();
+                progressFrame.setLocationRelativeTo(null);
+            }
+            progressFrame.setVisible(true);
+        } else {
+            if (progressFrame != null) {
+                progressFrame.setVisible(false);
+            }
+        }
     }
 
     private String searchFile(String type) {
@@ -677,7 +659,7 @@ public class DataEntry extends JFrame{
             postcode = roPostCode.getText().trim();
 
             ValidationResult result = vc.validatePlace(streetAddress, town, city, postcode);
-            if (!result.isValid()) {
+            if (result.isValid()) {
                 throw new RuntimeException(result.getMessage());
             }
             return new Place(streetAddress, town, city, postcode);
@@ -709,7 +691,7 @@ public class DataEntry extends JFrame{
             conHeight = Double.parseDouble(vehHeight.getText().trim());
 
             ValidationResult result = vc.validateVehicle(fuelConsumption, maxWeight, conLength, conWidth, conHeight);
-            if (!result.isValid()) {
+            if (result.isValid()) {
                 throw new RuntimeException(result.getMessage());
             }
             return new Vehicle(fuelConsumption, maxWeight, conLength, conWidth, conHeight);
@@ -745,7 +727,7 @@ public class DataEntry extends JFrame{
             height = Double.parseDouble(prodHeight.getText().trim());
 
             ValidationResult result = vc.validateProduct(name, currency, value, weight, length, width, height);
-            if (!result.isValid()) {
+            if (result.isValid()) {
                 throw new RuntimeException(result.getMessage());
             }
             return new Product(name, currency, value, weight, length, width, height);
@@ -835,7 +817,4 @@ public class DataEntry extends JFrame{
         return places;
     }
 
-    public JPanel getRootPanel() {
-        return rootPanel;
-    }
 }

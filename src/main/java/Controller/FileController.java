@@ -3,7 +3,6 @@ package Controller;
 import Model.Place;
 import Model.Product;
 import Model.Vehicle;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +22,8 @@ public class FileController {
     private static final String TRANSFORMATION = "AES";
     private static final String STATIC_KEY = "1234567890123456"; // 16-byte key for AES-128 for testing
 
-    String projectDir = System.getProperty("user.dir");
-    String resourcesPath = projectDir + "/src/main/resources/";
+    final String projectDir = System.getProperty("user.dir");
+    final String resourcesPath = projectDir + "/src/main/resources/";
 
     // Generate a static key (Replace this with secure key retrieval)
     private SecretKey getKey() {
@@ -105,7 +104,7 @@ public class FileController {
 
     public void saveVehicle(Vehicle vehicle, String input, boolean report) {
         try (FileOutputStream fos = new FileOutputStream(resourcesPath + "Vehicles/" + input + ".txt")) {
-                fos.write((vehicle.toString() + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+            fos.write((vehicle.toString() + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
             logger.info("Vehicle {} written successfully.", input);
             if (report) {
                 JOptionPane.showMessageDialog(null, String.format("Vehicle %s saved successfully.", input));
@@ -194,7 +193,7 @@ public class FileController {
         try (FileOutputStream fos = new FileOutputStream(resourcesPath + "defaultCosts.txt")) {
             fos.write((builder + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
             logger.info("Costs File written successfully.");
-                JOptionPane.showMessageDialog(null, "Costs File saved successfully.");
+            JOptionPane.showMessageDialog(null, "Costs File saved successfully.");
         } catch (Exception ex) {
             logger.error("Error writing Costs File: {}", ex.getMessage());
             JOptionPane.showMessageDialog(null, "Costs File was not Saved.", "File Save Error", JOptionPane.ERROR_MESSAGE);
@@ -222,5 +221,4 @@ public class FileController {
         }
         return costs;
     }
-
 }

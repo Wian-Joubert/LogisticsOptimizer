@@ -211,7 +211,7 @@
                     </constraints>
                     <properties>
                       <font name="Bookshelf Symbol 7" size="16" style="1"/>
-                      <text value="Product Dimentions"/>
+                      <text value="Product Dimensions"/>
                     </properties>
                   </component>
                   <grid id="e0630" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -986,12 +986,6 @@
                 <constraints/>
                 <properties>
                   <text value="Load All"/>
-                </properties>
-              </component>
-              <component id="cdaa8" class="javax.swing.JButton" binding="openFile">
-                <constraints/>
-                <properties>
-                  <text value="Open File"/>
                 </properties>
               </component>
               <component id="afa32" class="javax.swing.JToolBar$Separator">

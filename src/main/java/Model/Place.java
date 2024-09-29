@@ -6,23 +6,26 @@ public class Place {
     private final String city;
     private final String postcode;
 
-    public Place (String street, String town, String city, String postcode){
+    public Place(String street, String town, String city, String postcode) {
         this.street = street;
         this.town = town;
         this.city = city;
         this.postcode = postcode;
     }
 
-    public String getStreet(){
+    public String getStreet() {
         return street;
     }
-    public String getTown(){
+
+    public String getTown() {
         return town;
     }
-    public String getCity(){
+
+    public String getCity() {
         return city;
     }
-    public String getPostcode(){
+
+    public String getPostcode() {
         return postcode;
     }
 

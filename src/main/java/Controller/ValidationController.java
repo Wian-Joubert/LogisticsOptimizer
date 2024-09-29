@@ -12,52 +12,52 @@ public class ValidationController {
     private static final String INVALID_CHARACTERS_REGEX = "[\\\\/:*?\"<>|]";
     private static final String STREET_PATTERN = ".*\\d+.*\\s+.*\\s+(St|Ave|Rd|Blvd|Ln|Dr|Pl|Ct|Terr|Way|Pkwy|Cir)$";
 
-    public ValidationResult validateProduct(String name, String currency, double value, double weight, double length, double width, double height){
-        if (name.isBlank() || name.isEmpty()){
+    public ValidationResult validateProduct(String name, String currency, double value, double weight, double length, double width, double height) {
+        if (name.isBlank() || name.isEmpty()) {
             return new ValidationResult(false, "Product Name is Empty.");
         }
-        if (currency.isBlank() || currency.isEmpty()){
+        if (currency.isBlank() || currency.isEmpty()) {
             return new ValidationResult(false, "Product Currency is not selected");
         }
-        if (value <= 0){
+        if (value <= 0) {
             return new ValidationResult(false, "Product Value cannot be <= 0.");
         }
-        if (weight <= 0){
+        if (weight <= 0) {
             return new ValidationResult(false, "Product Weight cannot be <= 0.");
         }
-        if (length <= 0){
+        if (length <= 0) {
             return new ValidationResult(false, "Product Length cannot be <= 0.");
         }
-        if (width <= 0){
+        if (width <= 0) {
             return new ValidationResult(false, "Product Width cannot be <= 0.");
         }
-        if (height <= 0){
+        if (height <= 0) {
             return new ValidationResult(false, "Product Height cannot be <= 0.");
         }
         return new ValidationResult(true);
     }
 
-    public ValidationResult validateVehicle(int fuelConsumption, double maxWeight, double conLength, double conWidth, double conHeight){
-        if (fuelConsumption <= 0){
+    public ValidationResult validateVehicle(int fuelConsumption, double maxWeight, double conLength, double conWidth, double conHeight) {
+        if (fuelConsumption <= 0) {
             return new ValidationResult(false, "Vehicle Fuel Consumption cannot be <= 0.");
         }
-        if (maxWeight <= 0){
+        if (maxWeight <= 0) {
             return new ValidationResult(false, "Container Maximum Load cannot be <= 0.");
         }
-        if (conLength <= 0){
+        if (conLength <= 0) {
             return new ValidationResult(false, "Container Length cannot be <= 0.");
         }
-        if (conWidth <= 0){
+        if (conWidth <= 0) {
             return new ValidationResult(false, "Container Width cannot be <= 0.");
         }
-        if (conHeight <= 0){
+        if (conHeight <= 0) {
             return new ValidationResult(false, "Container Height cannot be <= 0.");
         }
         return new ValidationResult(true);
     }
 
-    public ValidationResult validatePlace(String street, String town, String city, String postcode){
-        if (street.isEmpty() || street.isBlank()){
+    public ValidationResult validatePlace(String street, String town, String city, String postcode) {
+        if (street.isEmpty() || street.isBlank()) {
             return new ValidationResult(false, "Street cannot be Empty.");
         }
         if (!street.matches(STREET_PATTERN)) {

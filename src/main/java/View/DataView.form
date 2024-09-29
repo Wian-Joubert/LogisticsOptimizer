@@ -61,7 +61,7 @@
           <grid id="f044e" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="10" left="10" bottom="10" right="10"/>
             <constraints>
-              <tabbedpane title="Products Shippment"/>
+              <tabbedpane title="Products Shipment"/>
             </constraints>
             <properties>
               <background color="-14803166"/>

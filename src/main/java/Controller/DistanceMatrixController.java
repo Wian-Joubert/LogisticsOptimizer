@@ -1,4 +1,5 @@
 package Controller;
+
 import Model.Place;
 import com.google.maps.*;
 import com.google.maps.errors.ApiException;
@@ -12,12 +13,12 @@ import java.util.ArrayList;
 
 public class DistanceMatrixController {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrixController.class);
-    FileController fileController = new FileController();
+    final FileController fileController = new FileController();
 
-    public DistanceMatrix distanceMatrixCall(ArrayList<Place> places){
+    public DistanceMatrix distanceMatrixCall(ArrayList<Place> places) {
         try {
             String API_KEY = fileController.readApiKey();
-            if (API_KEY == null){
+            if (API_KEY == null) {
                 throw new RuntimeException("No API Key found.");
             }
 
@@ -27,7 +28,7 @@ public class DistanceMatrixController {
 
             ArrayList<String> origins = new ArrayList<>();
             ArrayList<String> destinations = new ArrayList<>();
-            for (Place place : places){
+            for (Place place : places) {
                 StringBuilder location = new StringBuilder();
                 location.append(place.getStreet()).append(", ");
                 location.append(place.getTown()).append(", ");
@@ -42,7 +43,7 @@ public class DistanceMatrixController {
                 logger.info("Geocoding origin: {}", origins.toArray()[i]);
                 GeocodingResult[] originsGeo = GeocodingApi.geocode(context, origins.toArray()[i].toString()).await();
 
-                if (originsGeo.length == 0){
+                if (originsGeo.length == 0) {
                     throw new RuntimeException(String.format("Failed to Geocode Origin Address: %s", origins.toArray()[i].toString()));
                 }
 
@@ -55,7 +56,7 @@ public class DistanceMatrixController {
                 logger.info("Geocoding destination: {}", destinations.toArray()[i]);
                 GeocodingResult[] destinationsGeo = GeocodingApi.geocode(context, destinations.toArray()[i].toString()).await();
 
-                if (destinationsGeo.length == 0){
+                if (destinationsGeo.length == 0) {
                     throw new RuntimeException(String.format("Failed to Geocode Origin Address: %s.", destinations.toArray()[i].toString()));
                 }
 
@@ -68,7 +69,7 @@ public class DistanceMatrixController {
                     .destinations(destinationLatLngs)
                     .await();
 
-            if (distanceMatrix.rows.length == 0){
+            if (distanceMatrix.rows.length == 0) {
                 throw new RuntimeException("Failed to retrieve Distance Matrix.");
             }
 

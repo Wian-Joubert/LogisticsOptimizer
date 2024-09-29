@@ -23,18 +23,23 @@ public class Vehicle {
     public int getFuelConsumption() {
         return fuelConsumption;
     }
+
     public double getMaxWeight() {
         return maxWeight;
     }
+
     public double getConLength() {
         return conLength;
     }
+
     public double getConWidth() {
         return conWidth;
     }
+
     public double getConHeight() {
         return conHeight;
     }
+
     public BigDecimal getConVolume() {
         return conVolume;
     }

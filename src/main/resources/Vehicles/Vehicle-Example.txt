@@ -1,0 +1,1 @@
+Vehicle{fuelConsumption=16, maxWeight=13000.0, conLength=6.058, conWidth=2.438, conHeight=2.591, conVolume=38.268}

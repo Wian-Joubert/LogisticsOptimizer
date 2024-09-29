@@ -50,7 +50,7 @@ public class TSModel {
         return objectiveValue;
     }
 
-    public DistanceMatrix getDistanceMatrix(){
+    public DistanceMatrix getDistanceMatrix() {
         return distanceMatrix;
     }
 
@@ -81,8 +81,7 @@ public class TSModel {
                 if (currentObjectiveValue < objectiveValue) {
                     objectiveValue = currentObjectiveValue;
                     System.arraycopy(decisionArray, 0, optimalSolution, 0, decisionArray.length);
-                    System.out.println("New optimal solution found: " + arrayToString(optimalSolution) +
-                            " with objective value: " + currentObjectiveValue);
+                    System.out.println("New optimal solution found: " + arrayToString(optimalSolution) + " with objective value: " + currentObjectiveValue);
                     printRouteInterpretation(optimalSolution);
                 }
             }
@@ -128,7 +127,6 @@ public class TSModel {
         }
         return false;
     }
-
 
     private String arrayToString(int[] array) {
         StringBuilder sb = new StringBuilder("[");
